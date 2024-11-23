@@ -23,6 +23,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CustomItemController;
+use App\Http\Controllers\AuctionController;
             
 
 Route::get('/', function () {return redirect('sign-in');})->middleware('guest');
@@ -50,6 +51,9 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('tables', function () {
 		return view('pages.tables');
 	})->name('tables');
+	Route::get('auctions', function () {
+		return view('pages.auctions');
+	})->name('auctions');
 	Route::get('rtl', function () {
 		return view('pages.rtl');
 	})->name('rtl');
@@ -83,9 +87,9 @@ Route::get('users/create', [UserController::class, 'create'])->name('users.creat
 // مسار تخزين المستخدم الجديد
 Route::post('users/store', [UserController::class, 'store'])->name('users.store');
 
-Route::resource('items', CustomItemController::class);
 Route::get('items', [CustomItemController::class, 'index']);
 
+Route::get('/auctions', [AuctionController::class, 'index'])->name('auctions');
             
 
 Route::get('/', function () {return redirect('sign-in');})->middleware('guest');
