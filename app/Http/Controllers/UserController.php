@@ -88,6 +88,24 @@ public function destroy($id)
     }
 }
 
+public function update($id, Request $request)
+{
+    
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'phone_number' => 'nullable|string|max:15',
+        'residence' => 'nullable|string|max:255',
+        'role' => 'required|in:customer,admin,superAdmin',
+    ]);
+
+    
+    $user = User::findOrFail($id);
+    $user->update($validated);
+
+    
+    return redirect()->route('users.index')->with('success', 'User updated successfully.');
+}
+
 
 
 

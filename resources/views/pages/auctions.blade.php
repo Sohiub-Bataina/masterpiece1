@@ -18,6 +18,8 @@
                                 <th>Status</th>
                                 <th>Created At</th>
                                 <th>Updated At</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -39,10 +41,18 @@
                                     </td>
                                     <td>{{ $auction->created_at }}</td>
                                     <td>{{ $auction->updated_at }}</td>
+                                    <td class="align-middle text-center">
+                                        <button class="badge badge-sm bg-gradient-success border-0"
+                                            onclick="showEditDialog('{{ $auction->id }}', '{{ $auction->auction_name }}', '{{ $auction->status }}')">Edit</button>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <button class="badge badge-sm bg-gradient-danger border-0"
+                                            onclick="deleteAuction('{{ $auction->id }}')">Delete</button>
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center">No auctions available.</td>
+                                    <td colspan="9" class="text-center">No auctions available.</td>
                                 </tr>
                             @endforelse
                         </tbody>

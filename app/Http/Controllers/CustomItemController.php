@@ -2,38 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CustomItem;
+use App\Models\CustomsItem;
+use App\Models\ItemImage;
 use Illuminate\Http\Request;
 
 class CustomItemController extends Controller
 {
     
-    public function index(Request $request)
-{
-    $search = $request->get('search', '');
-    $state = $request->get('state', 0);
-    $condition = $request->get('condition', '');
-    $customItemsQuery = CustomItem::query();
-
-    if (!empty($search)) {
-        $customItemsQuery->where(function ($q) use ($search) {
-            foreach (['item_name', 'base_price', 'quantity', 'category_id'] as $column) {
-                $q->orWhere($column, 'LIKE', "%{$search}%");
-            }
-            $q->orWhereDate('created_at', 'LIKE', "%{$search}%");
-        });
+    public function index()
+    {
+        $customItems = CustomsItem::join('item_images', 'item_images.item_id', '=', 'customs_items.id')
+            ->select('customs_items.*', 'item_images.image_url')
+            ->where('customs_items.is_deleted', 0) 
+            ->paginate(10);
+        return view('pages.tables', compact('customItems'));
     }
+    
 
-    if (!empty($condition)) {
-        $customItemsQuery->where('item_name', $condition);
-    }
 
-    $customItems = CustomItem::all();  // بدلاً من paginate
-    dd($customItems);
-    return view('pages.tables', [
-        'customItems' => $customItems,
-    ]);
-}
+    
 
 
     
@@ -64,7 +51,7 @@ class CustomItemController extends Controller
     
     public function edit($id)
     {
-        $customItem = CustomItem::findOrFail($id);
+        $customItem = CustomsItem::findOrFail($id);
         return view('pages.edit_item', compact('customItem'));
     }
 
@@ -76,7 +63,7 @@ class CustomItemController extends Controller
             'base_price' => 'required|numeric',
         ]);
 
-        $customItem = CustomItem::findOrFail($id);
+        $customItem = CustomsItem::findOrFail($id);
         $customItem->item_name = $request->item_name;
         $customItem->base_price = $request->base_price;
         $customItem->quantity = $request->quantity;
@@ -86,12 +73,15 @@ class CustomItemController extends Controller
         return redirect()->route('items.index');
     }
 
-    
     public function destroy($id)
-    {
-        $customItem = CustomItem::findOrFail($id);
-        $customItem->delete();
-
-        return redirect()->route('items.index');
+{
+    try {
+        $user = CustomsItem::findOrFail($id);
+        $user->is_deleted = 1;
+        $user->save();
+        return redirect()->route('items.index')->with('success', 'item marked as deleted successfully.');
+    } catch (\Exception $e) {
+        return redirect()->route('items.index')->with('error', 'An error occurred while deleting the item.');
     }
+}
 }
