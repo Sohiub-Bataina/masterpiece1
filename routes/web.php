@@ -79,7 +79,7 @@ Route::group(['middleware' => 'auth'], function () {
 Route::get('users/edit/{id}', [UserController::class, 'edit'])->name('users.edit');
 Route::put('users/update/{id}', [UserController::class, 'update'])->name('users.update');
 Route::delete('users/delete/{id}', [UserController::class, 'destroy'])->name('users.destroy');
-Route::get('users', [UserController::class, 'index'])->name('users.index');
+Route::get('users', [UserController::class, 'index'])->middleware('auth')->name('users.index');
 Route::get('tables', [CustomItemController::class, 'index'])->middleware('auth')->name('tables');
 // مسار عرض صفحة إنشاء مستخدم جديد
 Route::get('users/create', [UserController::class, 'create'])->name('users.create');

@@ -24,6 +24,7 @@
                 <label for="category_id">Category</label>
                 <input type="text" id="category_id" name="category_id" value="{{ old('category_id', $customItem->category_id) }}" class="form-control" required>
             </div>
+            
 
             <div class="form-group">
                 <button type="submit" class="btn btn-primary">Update Item</button>
