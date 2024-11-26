@@ -14,11 +14,12 @@ class Auction extends Model
         'end_time',
         'status',
         'is_deleted',
+        'item_id',
     ];
 
     public function customsItems()
     {
-        return $this->hasMany(CustomsItem::class);
+        return $this->belongsTo(CustomsItem::class, 'item_id');
     }
 
     public function auctionBids()

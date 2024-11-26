@@ -23,7 +23,7 @@ class CustomsItem extends Model
 
     public function auction()
     {
-        return $this->belongsTo(Auction::class);
+        return $this->hasOne(Auction::class, 'item_id');
     }
 
     public function category()

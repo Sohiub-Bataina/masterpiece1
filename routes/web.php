@@ -24,6 +24,8 @@ use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CustomItemController;
 use App\Http\Controllers\AuctionController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\BrandController;
             
 
 Route::get('/', function () {return redirect('sign-in');})->middleware('guest');
@@ -94,4 +96,27 @@ Route::get('items/{id}', [CustomItemController::class, 'edit'])->name('items.edi
 Route::put('items/{id}/u', [CustomItemController::class, 'update'])->name('items.update');
 Route::delete('items/delete/{id}', [CustomItemController::class, 'destroy'])->name('items.destroy');
 
-Route::get('/auctions', [AuctionController::class, 'index'])->name('auctions');
+Route::get('/auctions', [AuctionController::class, 'index'])->middleware('auth')->name('auctions.index');
+
+
+
+Route::delete('/auctions/{auction}', [AuctionController::class, 'destroy'])->name('auctions.destroy');
+Route::get('auctions/{id}/edit', [AuctionController::class, 'edit'])->name('auctions.edit');
+Route::put('auctions/{id}', [AuctionController::class, 'update'])->name('auctions.update');
+
+Route::get('/category', [CategoryController::class, 'index'])->middleware('auth')->name('category.index');
+Route::get('category/{id}/edit', [CategoryController::class, 'edit'])->name('category.edit');
+Route::put('category/{id}', [CategoryController::class, 'update'])->name('category.update');
+Route::delete('category/delete/{id}', [CategoryController::class, 'destroy'])->name('category.destroy');
+Route::get('/category/create', [CategoryController::class, 'create'])->name('category.create');
+Route::post('/category', [CategoryController::class, 'store'])->name('category.store');
+
+
+
+
+Route::get('/brand', [BrandController::class, 'index'])->middleware('auth')->name('brand.index');
+Route::get('/brand/create', [BrandController::class, 'create'])->name('brand.create');
+Route::post('/brand', [BrandController::class, 'store'])->name('brand.store');
+Route::get('/brand/{id}/edit', [BrandController::class, 'edit'])->name('brand.edit');
+Route::put('/brand/{id}', [BrandController::class, 'update'])->name('brand.update');
+Route::delete('/brand/{id}', [BrandController::class, 'destroy'])->name('brand.destroy');

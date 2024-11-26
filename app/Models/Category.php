@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
+    public $timestamps = false;
     use HasFactory;
+    protected $table = 'category';
 
     protected $fillable = [
         'category_name',

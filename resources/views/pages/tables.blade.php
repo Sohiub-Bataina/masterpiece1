@@ -21,10 +21,7 @@
                                         <tr>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Item Name</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Description</th>
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Base Price</th>
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Quantity</th>
                                             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Category</th>
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Created At</th>
                                             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Approval Status</th>
                                             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Image</th>
                                             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Actions</th>
@@ -35,22 +32,26 @@
                                             <tr>
                                                 <td>{{ $item->item_name }}</td>
                                                 <td>{{ Str::limit($item->item_description, 50) }}</td>
-                                                <td class="text-center">{{ $item->base_price }}</td>
-                                                <td class="text-center">{{ $item->quantity }}</td>
-                                                <td class="text-center">{{ $item->category_id }}</td>
-                                                <td class="text-center">{{ $item->created_at->format('d/m/Y') }}</td>
+                                                <td class="text-center">{{ $item->category->category_name ?? 'N/A' }}</td>
                                                 <td class="text-center">
-                                                    <span class="badge {{ $item->manager_approval == 'Approved' ? 'bg-gradient-success' : 'bg-gradient-warning' }}">
+                                                    <span class="badge 
+                                                        {{ $item->manager_approval == 'pending' ? 'bg-gradient-warning' : '' }} 
+                                                        {{ $item->manager_approval == 'approved' ? 'bg-gradient-success' : '' }} 
+                                                        {{ $item->manager_approval == 'rejected' ? 'bg-gradient-danger' : '' }}">
                                                         {{ $item->manager_approval }}
                                                     </span>
                                                 </td>
                                                 <td class="text-center">
-                                                        <img src="{{ asset('assets/item_images/' . $item->image_url) }}" alt="Item Image" class="avatar avatar-sm me-2">
+                                                    <img src="{{ asset('assets/item_images/' . $item->image_url) }}" alt="Item Image" class="avatar avatar-sm me-2">
                                                 </td>
                                                 <td class="text-center">
+                                                <button type="button" class="btn btn-info btn-link" onclick="viewDetails({{ $item->id }})">
+                                                        <i class="material-icons">visibility</i>
+                                                    </button>
                                                     <a href="{{ route('items.edit', $item->id) }}" class="btn btn-success btn-link">
                                                         <i class="material-icons">edit</i>
                                                     </a>
+                                                    
                                                     <button type="button" class="btn btn-danger btn-link" onclick="confirmDelete({{ $item->id }})">
                                                         <i class="material-icons">close</i>
                                                     </button>
@@ -77,6 +78,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    // حذف العنصر
     function confirmDelete(itemId) {
         Swal.fire({
             title: 'Are you sure?',
@@ -91,6 +93,39 @@
                 document.getElementById(`delete-form-${itemId}`).submit();
             }
         });
+    }
+
+    // عرض التفاصيل
+    function viewDetails(itemId) {
+        const item = @json($customItems->keyBy('id')); // تحويل البيانات إلى JSON
+        const details = item[itemId];
+
+        if (details) {
+            let detailsHtml = `
+                <p><strong>Created At:</strong> ${details.created_at}</p>
+                <p><strong>Quantity:</strong> ${details.quantity}</p>
+                <p><strong>Base Price:</strong> ${details.base_price}</p>
+            `;
+
+            // إذا كانت الحالة 'rejected' نعرض سبب الرفض
+            if (details.manager_approval === 'rejected') {
+                detailsHtml += `<p><strong>Rejection Reason:</strong> ${details.rejection_reason}</p>`;
+            }
+
+            Swal.fire({
+                title: 'Item Details',
+                html: detailsHtml,
+                icon: 'info',
+                confirmButtonText: 'Close'
+            });
+        } else {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Item details not found.',
+                icon: 'error',
+                confirmButtonText: 'Close'
+            });
+        }
     }
 </script>
 
