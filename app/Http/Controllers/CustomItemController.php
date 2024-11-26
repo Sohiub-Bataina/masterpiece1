@@ -12,14 +12,14 @@ use App\Models\Category;
 class CustomItemController extends Controller
 {
     public function index()
-{
-    $customItems = CustomsItem::join('item_images', 'item_images.item_id', '=', 'customs_items.id')
-    ->join('category', 'category.id', '=', 'customs_items.category_id') 
-    ->select('customs_items.*', 'item_images.image_url', 'category.category_name')
-    ->where('customs_items.is_deleted', 0) 
-    ->paginate(10);
-    return view('pages.tables', compact('customItems'));
-}
+    {
+        $customItems = CustomsItem::join('item_images', 'item_images.item_id', '=', 'customs_items.id')
+            ->select('customs_items.*', 'item_images.image_url')
+            ->where('customs_items.is_deleted', 0) 
+            ->paginate(10);
+          
+        return view('pages.tables', compact('customItems'));
+    }
 
     
     public function create()
