@@ -17,13 +17,12 @@
 
                     <!-- Category Image -->
                     <div class="mb-3">
-    <label for="category_image" class="form-label">Category Image</label>
-    <input type="file" id="category_image" name="category_image" class="form-control" accept="image/png, image/jpeg, image/jpg">
-    @if($category->category_image)
-        <img src="{{ asset('storage/' . $category->category_image) }}" alt="Current Image" class="mt-2" width="100">
-    @endif
-</div>
-
+                        <label for="category_image" class="form-label">Category Image</label>
+                        <input type="file" id="category_image" name="category_image" class="form-control" accept="image/png, image/jpeg, image/jpg">
+                        @if($category->category_image)
+                            <img src="{{ asset($category->category_image) }}" alt="Current Image" class="mt-2" width="100">
+                        @endif
+                    </div>
 
                     <!-- Submit Button -->
                     <div class="d-grid">

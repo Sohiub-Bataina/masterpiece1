@@ -31,10 +31,10 @@ class SessionsController extends Controller
     }
 
     $user = auth()->user();
-    if ($user->role !== 'superAdmin') {
+    if (!in_array($user->role, ['superAdmin', 'admin'])) {
         auth()->logout();
         throw ValidationException::withMessages([
-            'email' => 'Unauthorized access. Only Super Admins can log in.'
+            'email' => 'Unauthorized access. Only Admins and Super Admins can log in.'
         ]);
     }
 
@@ -42,6 +42,7 @@ class SessionsController extends Controller
 
     return redirect('/dashboard');
 }
+
 
 
     public function show(){

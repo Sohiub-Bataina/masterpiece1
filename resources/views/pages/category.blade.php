@@ -33,7 +33,13 @@
                                             <tr>
                                                 <td class="text-center">{{ $category->id }}</td>
                                                 <td class="text-center">{{ $category->category_name }}</td>
-                                                <td class="text-center">{{ $category->category_image ?? 'N/A' }}</td>
+                                                <td class="text-center">
+                                                    @if($category->category_image)
+                                                        <img src="{{ asset($category->category_image) }}" alt="Category Image" style="width: 50px; height: auto;">
+                                                    @else
+                                                        N/A
+                                                    @endif
+                                                </td>
                                                 <td class="text-center">
                                                     <!-- View Details Button -->
                                                     <a href="javascript:void(0)" class="btn btn-info btn-link" onclick="showViewDialog('{{ $category->id }}', '{{ $category->category_name }}', '{{ $category->category_image }}')">
@@ -94,7 +100,7 @@
             title: 'Category Details',
             html: `
                 <p><strong>Category Name:</strong> ${name}</p>
-                <p><strong>Category Image:</strong> ${image}</p>
+                <p><strong>Category Image:</strong> ${image ? `<img src="${asset(image)}" alt="Category Image" style="width: 50px;">` : 'N/A'}</p>
             `,
             focusConfirm: false,
         });

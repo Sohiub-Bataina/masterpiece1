@@ -12,7 +12,7 @@ class BrandController extends Controller
     public function index()
     {
         $brands = Brand::with('category')->paginate(10);
-        return view('pages.brand', compact('brands'));
+        return view('pages.brand', compact('brands'))->with('activePage', 'brand');
     }
 
     public function create()

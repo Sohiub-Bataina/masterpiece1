@@ -13,13 +13,21 @@ class Auction extends Model
         'start_time',
         'end_time',
         'status',
-        'is_deleted',
+        'announcement_start_time',
+        'announcement_end_time',
+        'inspection_start_time',
+        'inspection_end_time',
+        'minimum_price',
+        'starting_price',
+        'minimum_bid',
+        'main_image',
+        'insurance_fee',
         'item_id',
     ];
 
     public function customsItems()
     {
-        return $this->belongsTo(CustomsItem::class, 'item_id');
+        return $this->hasMany(CustomsItem::class, 'auction_id');
     }
 
     public function auctionBids()
@@ -27,4 +35,3 @@ class Auction extends Model
         return $this->hasMany(AuctionBid::class);
     }
 }
-

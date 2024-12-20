@@ -19,7 +19,7 @@ return new class extends Migration
             $table->enum('status', ['pending', 'active', 'ended', 'cancelled'])->default('pending');
             $table->timestamps(); 
             $table->boolean('is_deleted')->default(0);
-
+            $table->timestamp('announcement_start_time')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->bigInteger('item_id')->unsigned(); 
             $table->foreign('item_id')
                   ->references('id') 

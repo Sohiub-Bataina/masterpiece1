@@ -12,7 +12,7 @@ class CategoryController extends Controller
     public function index()
     {
        $categories = Category::paginate(10);  // 10 هي عدد العناصر لكل صفحة
-    return view('pages.category', compact('categories'));
+       return view('pages.category', compact('categories'));
     }
 
     // عرض نموذج إضافة فئة جديدة
@@ -23,25 +23,25 @@ class CategoryController extends Controller
 
     // حفظ فئة جديدة في قاعدة البيانات
     public function store(Request $request)
-{
-    $request->validate([
-        'category_name' => 'required|string|max:191',
-        'category_image' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
-    ]);
+    {
+        $request->validate([
+            'category_name' => 'required|string|max:191',
+            'category_image' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
+        ]);
 
-    $category = new Category();
-    $category->category_name = $request->category_name;
+        $category = new Category();
+        $category->category_name = $request->category_name;
 
-    if ($request->hasFile('category_image')) {
-        $imagePath = $request->file('category_image')->store('categories', 'public');
-        $category->category_image = $imagePath;
+        if ($request->hasFile('category_image')) {
+            // تخزين الصورة في المجلد 'public/assets/img'
+            $imagePath = $request->file('category_image')->move(public_path('assets/img'), $request->file('category_image')->getClientOriginalName());
+            $category->category_image = 'assets/img/' . $request->file('category_image')->getClientOriginalName();
+        }
+
+        $category->save();
+
+        return redirect()->route('category.index')->with('success', 'Category created successfully!');
     }
-
-    $category->save();
-
-    return redirect()->route('category.index')->with('success', 'Category created successfully!');
-}
-
 
     // عرض فئة معينة حسب الـ ID
     public function show($id)
@@ -50,9 +50,9 @@ class CategoryController extends Controller
         return view('pages.category-show', compact('category'));
     }
 
+    // عرض نموذج تعديل الفئة
     public function edit($id)
     {
-     
         $category = Category::findOrFail($id);
         return view('pages.edit_category', compact('category'));
     }
@@ -60,45 +60,42 @@ class CategoryController extends Controller
     // تحديث الفئة
     public function update(Request $request, $id)
     {
-        // جلب الفئة
         $category = Category::findOrFail($id);
 
-        // التحقق من البيانات المدخلة
         $request->validate([
             'category_name' => 'required|string|max:191',
             'category_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        // تحديث اسم الفئة
         $category->category_name = $request->input('category_name');
 
-        // إذا كانت هناك صورة جديدة تم رفعها
         if ($request->hasFile('category_image')) {
             // حذف الصورة القديمة إذا كانت موجودة
-            if ($category->category_image && Storage::exists($category->category_image)) {
-                Storage::delete($category->category_image);
+            if ($category->category_image && file_exists(public_path($category->category_image))) {
+                unlink(public_path($category->category_image));
             }
 
             // تخزين الصورة الجديدة
-            $imagePath = $request->file('category_image')->store('categories', 'public');
-            $category->category_image = $imagePath;
+            $imagePath = $request->file('category_image')->move(public_path('assets/img'), $request->file('category_image')->getClientOriginalName());
+            $category->category_image = 'assets/img/' . $request->file('category_image')->getClientOriginalName();
         }
 
-        // حفظ التغييرات
         $category->save();
 
-        // إعادة التوجيه مع رسالة نجاح
         return redirect()->route('category.index')->with('success', 'Category updated successfully!');
     }
-    
+
+    // حذف الفئة
     public function destroy($id)
     {
         $category = Category::findOrFail($id);
-        $category->delete();
-        $categories = Category::all(); 
-        return redirect()->route('category.index')->with('category', $categories)->with('success', 'Category deleted successfully');
-    }
-    
-    }
-    
 
+        // حذف الصورة إذا كانت موجودة
+        if ($category->category_image && file_exists(public_path($category->category_image))) {
+            unlink(public_path($category->category_image));
+        }
+
+        $category->delete();
+        return redirect()->route('category.index')->with('success', 'Category deleted successfully');
+    }
+}
