@@ -15,26 +15,39 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="base_price" class="form-label">Base Price</label>
-                        <input type="text" id="base_price" name="base_price" value="{{ old('base_price', $customItem->base_price) }}" class="form-control" required>
-                    </div>
-
-                    <div class="mb-3">
                         <label for="quantity" class="form-label">Quantity</label>
                         <input type="number" id="quantity" name="quantity" value="{{ old('quantity', $customItem->quantity) }}" class="form-control" required>
                     </div>
 
                     <div class="mb-3">
-    <label for="category_id" class="form-label">Category</label>
-    <select id="category_id" name="category_id" class="form-select" required>
-        @foreach($categories as $category)
-            <option value="{{ $category->id }}" {{ old('category_id', $customItem->category_id) == $category->id ? 'selected' : '' }}>
-                {{ $category->category_name }}
-            </option>
-        @endforeach
-    </select>
-</div>
+                        <label for="category_id" class="form-label">Category</label>
+                        <select id="category_id" name="category_id" class="form-select" required>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}" {{ old('category_id', $customItem->category_id) == $category->id ? 'selected' : '' }}>
+                                    {{ $category->category_name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 
+                    <!-- Dropdown for vehicle_status -->
+                    <div class="mb-3">
+                        <label for="vehicle_status" class="form-label">Vehicle Status</label>
+                        <select id="vehicle_status" name="vehicle_status" class="form-select" required>
+                            <option value="drivable" {{ old('vehicle_status', $customItem->vehicle_status) == 'drivable' ? 'selected' : '' }}>Drivable</option>
+                            <option value="non_drivable" {{ old('vehicle_status', $customItem->vehicle_status) == 'non_drivable' ? 'selected' : '' }}>Non-Drivable</option>
+                        </select>
+                    </div>
+
+                    <!-- Dropdown for storage_location -->
+                    <div class="mb-3">
+                        <label for="storage_location" class="form-label">Storage Location</label>
+                        <select id="storage_location" name="storage_location" class="form-select" required>
+                            <option value="Amman Customs" {{ old('storage_location', $customItem->storage_location) == 'Amman Customs' ? 'selected' : '' }}>Amman Customs</option>
+                            <option value="Zarqa Free Zone" {{ old('storage_location', $customItem->storage_location) == 'Zarqa Free Zone' ? 'selected' : '' }}>Zarqa Free Zone</option>
+                            <option value="Aqaba" {{ old('storage_location', $customItem->storage_location) == 'Aqaba' ? 'selected' : '' }}>Aqaba</option>
+                        </select>
+                    </div>
 
                     <div class="mb-3">
                         <label for="manager_approval" class="form-label">Manager Approval</label>

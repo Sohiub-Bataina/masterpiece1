@@ -22,8 +22,9 @@
                                     <thead>
                                         <tr>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Item Name</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Description</th>
                                             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Category</th>
+                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Vehicle Status</th>
+                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Storage Location</th>
                                             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Approval Status</th>
                                             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Image</th>
                                             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Actions</th>
@@ -33,8 +34,9 @@
                                         @foreach($customItems as $item)
                                             <tr>
                                                 <td>{{ $item->item_name }}</td>
-                                                <td>{{ Str::limit($item->item_description, 50) }}</td>
                                                 <td class="text-center">{{ $item->category->category_name ?? 'N/A' }}</td>
+                                                <td class="text-center">{{ $item->vehicle_status }}</td>
+                                                <td class="text-center">{{ $item->storage_location }}</td>
                                                 <td class="text-center">
                                                     <span class="badge 
                                                         {{ $item->manager_approval == 'pending' ? 'bg-gradient-warning' : '' }} 
@@ -101,17 +103,17 @@
 
     // عرض التفاصيل
     function viewDetails(itemId) {
-        const item = @json($customItems->keyBy('id')); // تحويل البيانات إلى JSON
+        const item = @json($customItems->keyBy('id'));
         const details = item[itemId];
 
         if (details) {
             let detailsHtml = `
                 <p><strong>Created At:</strong> ${details.created_at}</p>
                 <p><strong>Quantity:</strong> ${details.quantity}</p>
-                <p><strong>Base Price:</strong> ${details.base_price}</p>
+                <p><strong>Vehicle Status:</strong> ${details.vehicle_status}</p>
+                <p><strong>Storage Location:</strong> ${details.storage_location}</p>
             `;
 
-            // إذا كانت الحالة 'rejected' نعرض سبب الرفض
             if (details.manager_approval === 'rejected') {
                 detailsHtml += `<p><strong>Rejection Reason:</strong> ${details.rejection_reason}</p>`;
             }

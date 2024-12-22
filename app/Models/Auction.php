@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -33,5 +34,13 @@ class Auction extends Model
     public function auctionBids()
     {
         return $this->hasMany(AuctionBid::class);
+    }
+    public function bids()
+    {
+        return $this->hasMany(AuctionBid::class, 'auction_id');
+    }
+    public function highestBid()
+    {
+        return $this->auctionBids()->orderBy('bid_amount', 'desc')->first();
     }
 }

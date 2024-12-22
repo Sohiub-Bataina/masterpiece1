@@ -9,6 +9,26 @@ use App\Http\Controllers\CustomItemController;
 use App\Http\Controllers\AuctionController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BrandController;
+//user side controllers
+use App\Http\Controllers\UserSide\UserSideCustomItemController;
+use App\Http\Controllers\UserSide\UserSideAuctionController;
+// user side
+
+
+Route::get('/home', function () {
+    return view('user-side.pages.home'); // تحديد المسار الكامل للـ View
+});
+Route::get('/browse-bid', function () {
+    return view('user-side.pages.browse-bid');
+})->name('browse-bid');
+
+Route::get('/home', [UserSideAuctionController::class, 'index'])->name('user-side.home');
+Route::get('/auction/{id}', [UserSideAuctionController::class, 'show'])->name('auction-details');
+Route::get('/browse-bid', [UserSideAuctionController::class, 'browseOrSearch'])->name('browse-bid');
+Route::get('/auction', [UserSideAuctionController::class, 'browseOrSearch'])->name('auction.search');
+
+
+
 
 /*
 |--------------------------------------------------------------------------

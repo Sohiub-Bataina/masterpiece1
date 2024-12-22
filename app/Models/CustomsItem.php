@@ -11,7 +11,6 @@ class CustomsItem extends Model
     protected $fillable = [
         'item_name',
         'item_description',
-        'base_price',
         'auction_id',
         'category_id',
         'brand_id',
@@ -19,6 +18,8 @@ class CustomsItem extends Model
         'rejection_reason',
         'quantity',
         'is_deleted',
+        'vehicle_status',       // حالة المركبة
+        'storage_location',     // مكان التخزين
     ];
 
     public function auction()
@@ -46,4 +47,3 @@ class CustomsItem extends Model
         return $this->hasMany(ItemReview::class);
     }
 }
-
