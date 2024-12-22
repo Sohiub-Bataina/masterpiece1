@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Auction;
@@ -10,7 +11,7 @@ class AuctionController extends Controller
     public function index()
     {
         $auctions = Auction::join('customs_items', 'auctions.item_id', '=', 'customs_items.id')
-            ->select('auctions.*', 'customs_items.item_name') 
+            ->select('auctions.*', 'customs_items.item_name')
             ->where('auctions.is_deleted', 0)
             ->paginate(10);
 
@@ -24,42 +25,48 @@ class AuctionController extends Controller
     }
 
     public function store(Request $request)
-{
-    $validatedData = $request->validate([
-        'auction_name' => 'required|string|max:255',
-        'start_time' => 'required|date',
-        'end_time' => 'required|date|after:start_time',
-        'announcement_start_time' => 'required|date',
-        'announcement_end_time' => 'required|date|after:announcement_start_time',
-        'inspection_start_time' => 'required|date',
-        'inspection_end_time' => 'required|date|after:inspection_start_time',
-        'minimum_price' => 'required|numeric|min:0',
-        'starting_price' => 'required|numeric|min:0',
-        'minimum_bid' => 'required|numeric|min:0',
-        'insurance_fee' => 'required|numeric|min:0',
-        'item_id' => 'required|exists:customs_items,id',  // تعديل الجدول من items إلى customs_items
-        'main_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // تحقق من الصورة
-    ]);
+    {
+        $validatedData = $request->validate([
+            'auction_name' => 'required|string|max:255',
+            'start_time' => 'required|date',
+            'end_time' => 'required|date|after:start_time',
+            'announcement_start_time' => 'required|date',
+            'announcement_end_time' => 'required|date|after:announcement_start_time',
+            'inspection_start_time' => 'required|date',
+            'inspection_end_time' => 'required|date|after:inspection_start_time',
+            'minimum_price' => 'required|numeric|min:0',
+            'starting_price' => 'required|numeric|min:0',
+            'minimum_bid' => 'required|numeric|min:0',
+            'insurance_fee' => 'required|numeric|min:0',
+            'item_id' => 'required|exists:customs_items,id',
+            'main_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
 
-    // إذا كانت التواريخ وصحة البيانات صحيحة، يتم حفظ البيانات
-    $auction = new Auction($validatedData);
+        // التحقق من أن `item_id` غير مرتبط بمزاد آخر
+        $customItem = CustomsItem::findOrFail($validatedData['item_id']);
+        if (!is_null($customItem->auction_id)) {
+            return redirect()->back()->withErrors(['item_id' => 'The selected item is already associated with another auction.']);
+        }
 
-    // إذا تم رفع صورة
-    if ($request->hasFile('main_image')) {
-        // اسم الصورة
-        $imageName = time() . '_' . $request->file('main_image')->getClientOriginalName();
+        // إنشاء المزاد
+        $auction = new Auction($validatedData);
 
-        // تخزين الصورة في المجلد 'public/assets/img'
-        $request->file('main_image')->move(public_path('assets/img'), $imageName);
+        // إذا تم رفع صورة
+        if ($request->hasFile('main_image')) {
+            $imageName = time() . '_' . $request->file('main_image')->getClientOriginalName();
+            $request->file('main_image')->move(public_path('assets/img'), $imageName);
+            $auction->main_image = 'assets/img/' . $imageName;
+        }
 
-        // تخزين المسار النسبي في قاعدة البيانات
-        $auction->main_image = 'assets/img/' . $imageName;
+        $auction->save();
+
+        // تحديث `auction_id` للعنصر
+        $customItem->auction_id = $auction->id;
+        $customItem->save();
+
+        return redirect()->route('auctions.index')->with('success', 'Auction has been added successfully');
     }
 
-    $auction->save();
-
-    return redirect()->route('auctions.index')->with('success', 'Auction has been added successfully');
-}
 
 
     public function destroy($id)
@@ -89,6 +96,3 @@ class AuctionController extends Controller
         return redirect()->route('auctions.index')->with('success', 'Auction updated successfully!');
     }
 }
-
-
-

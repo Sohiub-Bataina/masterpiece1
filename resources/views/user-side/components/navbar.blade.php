@@ -27,7 +27,7 @@
                 <img src="{{ asset('assets') }}/img/logos/image-removebg-preview.png" id="headerLogo" class="themeLogo img-fluid w-100" alt="logo" />
             </a>
             <div class="nav-right justify-content-center" id="navbar">
-                <ul class="navbar-nav position-relative d-none d-lg-flex">
+                <ul class="navbar-nav position-relative  d-lg-flex">
                     <li class="nav-item">
                         <a class="nav-link text-dark active" href="index.html">Home</a>
                     </li>

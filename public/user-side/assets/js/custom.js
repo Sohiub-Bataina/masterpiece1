@@ -89,12 +89,11 @@ $(document).on('change', ".changeTheme", function () {
     localStorage.setItem('storedValue', userColor);
     themeWrapper.attr('class', userColor);
     if (userColor == 'dark') {
-        document.getElementById('headerLogo').src = 'assets/images/logo-white.svg';
+
         document.getElementById('footerLogo').src = 'assets/images/logo.svg';
         document.getElementById('win-wrapper').style.backgroundImage = "url('assets/images/model-bg-dark.svg')";
         document.getElementById('login-wrapper').style.backgroundImage = "url('assets/images/login-bg-dark.svg')";
     } else {
-        document.getElementById('headerLogo').src = 'assets/images/logo.svg';
         document.getElementById('footerLogo').src = 'assets/images/logo-white.svg';
         document.getElementById('win-wrapper').style.backgroundImage = "url('assets/images/model-bg.svg')";
         document.getElementById('login-wrapper').style.backgroundImage = "url('assets/images/login-bg.svg')";
@@ -117,7 +116,6 @@ $(document).ready(function () {
             $('#changeTheme').prop('checked', false);
             $('#changeTheme1').prop('checked', false);
             document.getElementById("theme").className = "light";
-            document.getElementById('headerLogo').src = 'assets/images/logo.svg';
             document.getElementById('footerLogo').src = 'assets/images/logo-white.svg';
         }
     });

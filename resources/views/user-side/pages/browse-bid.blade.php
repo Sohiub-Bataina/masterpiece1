@@ -38,13 +38,29 @@
                             </div>
                             <div class="col-sm-6 col-xl-12">
                                 <div class="auction-wrapper p-3">
-                                    <select name="shorting" class="form-control bg-transparent border-0">
-                                        <option value="">Default Shorting</option>
-                                        <option value="">Price Low to Heigh</option>
-                                        <option value="">Price Heigh to Low </option>
-                                    </select>
+                                    <form action="{{ route('auction.search') }}" method="GET">
+                                        <select name="vehicle_status" class="form-control bg-transparent border-0" onchange="this.form.submit()">
+                                            <option value="">Filter by Vehicle Status</option>
+                                            <option value="drivable" {{ request('vehicle_status') === 'drivable' ? 'selected' : '' }}>Drivable</option>
+                                            <option value="non_drivable" {{ request('vehicle_status') === 'non_drivable' ? 'selected' : '' }}>Non Drivable</option>
+                                        </select>
+                                    </form>
                                 </div>
                             </div>
+                            <div class="col-sm-6 col-xl-12">
+                                <div class="auction-wrapper p-3">
+                                    <!-- فلترة حسب موقع التخزين -->
+                                    <form action="{{ route('auction.search') }}" method="GET">
+                                        <select name="storage_location" class="form-control bg-transparent border-0" onchange="this.form.submit()">
+                                            <option value="">Filter by Storage Location</option>
+                                            <option value="Amman Customs" {{ request('storage_location') === 'Amman Customs' ? 'selected' : '' }}>Amman Customs</option>
+                                            <option value="Zarqa Free Zone" {{ request('storage_location') === 'Zarqa Free Zone' ? 'selected' : '' }}>Zarqa Free Zone</option>
+                                            <option value="Aqaba" {{ request('storage_location') === 'Aqaba' ? 'selected' : '' }}>Aqaba</option>
+                                        </select>
+                                    </form>
+                                </div>
+                            </div>
+
 
 
                             <!-- Filter by Price Section -->
@@ -107,7 +123,7 @@
                         </div>
                     </div>
                 </div>
-                >
+
             </div>
         </div>
     </section>

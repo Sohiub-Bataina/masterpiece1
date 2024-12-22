@@ -42,35 +42,46 @@ class UserSideAuctionController extends Controller
     }
     public function browseOrSearch(Request $request)
     {
-        // الحصول على المدخلات من الـ request
         $vehicleStatus = $request->input('vehicle_status'); // 'drivable' أو 'non_drivable'
-        $query = $request->input('query'); // البحث
+        $storageLocation = $request->input('storage_location'); // موقع التخزين
+        $query = $request->input('query'); // كلمة البحث
 
-        // استعلام أساسي للمزادات
+        // استعلام أساسي لجلب المزادات
         $activeAuctionsQuery = Auction::query();
 
-        // تصفية المزادات حسب حالة المركبة إذا كانت موجودة
-        if ($vehicleStatus) {
-            if ($vehicleStatus === 'drivable' || $vehicleStatus === 'non_drivable') {
-                $activeAuctionsQuery->whereHas('customsItems', function ($query) use ($vehicleStatus) {
-                    $query->where('vehicle_status', $vehicleStatus);
-                });
-            }
+        // تصفية حسب حالة المركبة
+        if ($vehicleStatus && in_array($vehicleStatus, ['drivable', 'non_drivable'])) {
+            $activeAuctionsQuery->whereHas('customsItems', function ($query) use ($vehicleStatus) {
+                $query->where('vehicle_status', $vehicleStatus);
+            });
         }
 
-        // تصفية المزادات بناءً على البحث في حالة وجود كلمة بحث
+        // تصفية حسب موقع التخزين
+        if ($storageLocation) {
+            $activeAuctionsQuery->whereHas('customsItems', function ($query) use ($storageLocation) {
+                $query->where('storage_location', $storageLocation);
+            });
+        }
+
+        // تصفية حسب البحث
         if ($query) {
-            $activeAuctionsQuery->where('status', 'active')
-                ->where('auction_name', 'LIKE', '%' . $query . '%');
-        } else {
-            // إذا لم يكن هناك بحث، استرجاع جميع المزادات النشطة
-            $activeAuctionsQuery->where('status', 'active');
+            $activeAuctionsQuery->where('auction_name', 'LIKE', '%' . $query . '%');
         }
 
-        // جلب المزادات بناءً على المدخلات
-        $activeAuctions = $activeAuctionsQuery->with('customsItems')->get();
+        // جلب المزادات النشطة فقط
+        $activeAuctionsQuery->where('status', 'active');
 
-        // تمرير المتغيرات إلى الـ View
-        return view('user-side.pages.browse-bid', compact('activeAuctions', 'vehicleStatus', 'query'));
+        // تنفيذ الاستعلام وجلب البيانات
+        $activeAuctions = $activeAuctionsQuery->with(['customsItems' => function ($query) use ($vehicleStatus, $storageLocation) {
+            if ($vehicleStatus && in_array($vehicleStatus, ['drivable', 'non_drivable'])) {
+                $query->where('vehicle_status', $vehicleStatus);
+            }
+            if ($storageLocation) {
+                $query->where('storage_location', $storageLocation);
+            }
+        }])->get();
+
+        // تمرير البيانات إلى الواجهة
+        return view('user-side.pages.browse-bid', compact('activeAuctions', 'vehicleStatus', 'storageLocation', 'query'));
     }
 }
