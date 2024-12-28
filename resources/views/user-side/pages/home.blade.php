@@ -18,26 +18,17 @@
                         Join exclusive auction & Get the finest.
                     </h1>
                     <div class="input-group banner-search-box">
-                        <div class="select">
-                            <button class="selectBtn" data-type="Category">
-                                Category
-                            </button>
-                            <div class="selectDropdown">
-                                <div class="option" data-type="firstOption">Category</div>
-                                <div class="option" data-type="secondOption">Mobile</div>
-                                <div class="option" data-type="thirdOption">Jewellery</div>
-                                <div class="option" data-type="forthOption">Real Estate</div>
-                                <div class="option" data-type="fifthOption">Sports</div>
-                                <div class="option" data-type="sixthOption">Vehicle</div>
-                            </div>
-                        </div>
-                        <input
-                            type="search"
-                            class="form-control"
-                            placeholder="I’m Looking for..."
-                        />
-                        <button class="primary-btn">Search</button>
+                        <form action="{{ route('auction.search') }}" method="GET" style="display: flex; width: 100%;">
+                            <input
+                                type="search"
+                                name="query"
+                                class="form-control"
+                                placeholder="I’m Looking for..."
+                            />
+                            <button type="submit" class="primary-btn">Search</button>
+                        </form>
                     </div>
+
                 </div>
             </div>
 

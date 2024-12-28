@@ -6,7 +6,7 @@
         <div class="container">
             <div class="d-flex flex-column flex-md-row align-items-center justify-content-between">
                 <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('user-side.home') }}">Home</a></li>
                     <li class="breadcrumb-item active" aria-current="page">
                         Bid Detail
                     </li>
@@ -45,7 +45,7 @@
                                     <button  onclick="add({{ $minimumBid }})">+</button>
                                 </span>
                             </div>
-                            <a id="bidButton" href="checkout.html" class="primary-btn d-flex align-items-center" disabled>Bid Now</a>
+                            <a id="bidButton" href="#" class="primary-btn d-flex align-items-center" disabled>Bid Now</a>
                             <p id="errorMessage" class="text-danger" style="display:none;"></p>  <!-- الرسالة التي ستظهر في حالة الخطأ -->
                         </div>
                     </div>

@@ -45,4 +45,23 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    /**
+     * Customize the response for a given exception.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \Throwable $exception
+     * @return \Illuminate\Http\Response
+     */
+    public function render($request, Throwable $exception)
+    {
+        // Check if the exception is a NotFoundHttpException (404)
+        if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+            // Return the custom 404 page view
+            return response()->view('user-side.pages.404', [], 404);
+        }
+
+        // Default exception handling
+        return parent::render($request, $exception);
+    }
 }

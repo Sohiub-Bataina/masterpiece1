@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Auction;
 use App\Models\CustomsItem;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class AuctionController extends Controller
 {
@@ -94,5 +95,29 @@ class AuctionController extends Controller
 
         $auction->save();
         return redirect()->route('auctions.index')->with('success', 'Auction updated successfully!');
+    }
+
+
+    public function updateAuctionStatuses()
+    {
+        // جلب التاريخ والوقت الحالي
+        $currentDateTime = Carbon::now();
+
+        // تحديث حالة المزادات بناءً على الشروط
+        Auction::where('is_deleted', 0)->chunk(100, function ($auctions) use ($currentDateTime) {
+            foreach ($auctions as $auction) {
+                if ($currentDateTime->greaterThan($auction->end_time)) {
+                    // إذا كان الوقت الحالي بعد وقت النهاية، يتم تعيين الحالة إلى ended
+                    $auction->status = 'ended';
+                } elseif ($currentDateTime->greaterThanOrEqualTo($auction->start_time) && $currentDateTime->lessThanOrEqualTo($auction->end_time)) {
+                    // إذا كان الوقت الحالي داخل فترة المزاد، يتم تعيين الحالة إلى active
+                    $auction->status = 'active';
+                } elseif ($currentDateTime->greaterThanOrEqualTo($auction->announcement_start_time) && $currentDateTime->lessThan($auction->start_time)) {
+                    // إذا كان الوقت الحالي داخل فترة الإعلان، يتم تعيين الحالة إلى pending
+                    $auction->status = 'pending';
+                }
+                $auction->save();
+            }
+        });
     }
 }

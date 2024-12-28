@@ -12,6 +12,8 @@ use App\Http\Controllers\BrandController;
 //user side controllers
 use App\Http\Controllers\UserSide\UserSideCustomItemController;
 use App\Http\Controllers\UserSide\UserSideAuctionController;
+use App\Http\Controllers\UserSide\UserSideAuthController;
+use App\Http\Controllers\UserSide\UserSideProfileController;
 // user side
 
 
@@ -21,11 +23,21 @@ Route::get('/home', function () {
 Route::get('/browse-bid', function () {
     return view('user-side.pages.browse-bid');
 })->name('browse-bid');
+Route::get('/signup', function () {
+    return view('user-side.auth.signup');
+})->name('register');
+
 
 Route::get('/home', [UserSideAuctionController::class, 'index'])->name('user-side.home');
 Route::get('/auction/{id}', [UserSideAuctionController::class, 'show'])->name('auction-details');
 Route::get('/browse-bid', [UserSideAuctionController::class, 'browseOrSearch'])->name('browse-bid');
 Route::get('/auction', [UserSideAuctionController::class, 'browseOrSearch'])->name('auction.search');
+Route::get('/signup', [UserSideAuthController::class, 'showSignUpForm'])->name('signup');
+Route::post('/register', [UserSideAuthController::class, 'register'])->name('register');
+Route::post('/check-email', [UserSideAuthController::class, 'checkEmail'])->name('check.email');
+Route::get('User-Login', [UserSideAuthController::class, 'showLoginForm'])->name('user.login');
+Route::post('/check-login', [UserSideAuthController::class, 'checkLogin'])->name('check.login');
+Route::get('/customer-profile', [UserSideProfileController::class, 'showProfile'])->name('user.profile');
 
 
 

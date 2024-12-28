@@ -42,9 +42,12 @@ class UserSideAuctionController extends Controller
     }
     public function browseOrSearch(Request $request)
     {
-        $vehicleStatus = $request->input('vehicle_status'); // 'drivable' أو 'non_drivable'
-        $storageLocation = $request->input('storage_location'); // موقع التخزين
-        $query = $request->input('query'); // كلمة البحث
+        $vehicleStatus = $request->input('vehicle_status');
+        $query = $request->input('query');
+        $storageLocation = $request->input('storage_location');
+        $brandId = $request->input('brand_id');
+        $minPrice = $request->input('min_price');
+        $maxPrice = $request->input('max_price');
 
         // استعلام أساسي لجلب المزادات
         $activeAuctionsQuery = Auction::query();
@@ -63,7 +66,14 @@ class UserSideAuctionController extends Controller
             });
         }
 
-        // تصفية حسب البحث
+        // تصفية حسب العلامة التجارية
+        if ($brandId) {
+            $activeAuctionsQuery->whereHas('customsItems', function ($query) use ($brandId) {
+                $query->where('brand_id', $brandId);
+            });
+        }
+
+        // تصفية حسب البحث في اسم المزاد
         if ($query) {
             $activeAuctionsQuery->where('auction_name', 'LIKE', '%' . $query . '%');
         }
@@ -71,17 +81,19 @@ class UserSideAuctionController extends Controller
         // جلب المزادات النشطة فقط
         $activeAuctionsQuery->where('status', 'active');
 
-        // تنفيذ الاستعلام وجلب البيانات
-        $activeAuctions = $activeAuctionsQuery->with(['customsItems' => function ($query) use ($vehicleStatus, $storageLocation) {
-            if ($vehicleStatus && in_array($vehicleStatus, ['drivable', 'non_drivable'])) {
-                $query->where('vehicle_status', $vehicleStatus);
-            }
-            if ($storageLocation) {
-                $query->where('storage_location', $storageLocation);
-            }
-        }])->get();
+        // جلب البيانات
+        $activeAuctions = $activeAuctionsQuery->get();
+
+        // تحديد الحد الأدنى والحد الأقصى للسعر بناءً على البيانات
+        $minPrice = $activeAuctions->min(function ($auction) {
+            return $auction->highestBid()?->bid_amount ?? $auction->starting_price;
+        });
+
+        $maxPrice = $activeAuctions->max(function ($auction) {
+            return $auction->highestBid()?->bid_amount ?? $auction->starting_price;
+        });
 
         // تمرير البيانات إلى الواجهة
-        return view('user-side.pages.browse-bid', compact('activeAuctions', 'vehicleStatus', 'storageLocation', 'query'));
+        return view('user-side.pages.browse-bid', compact('activeAuctions', 'vehicleStatus', 'query', 'storageLocation', 'brandId', 'minPrice', 'maxPrice'));
     }
 }
