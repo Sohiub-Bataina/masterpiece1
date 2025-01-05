@@ -55,12 +55,8 @@
                     <li class="nav-item">
                         <a class="nav-link text-dark active" href="{{ route('user-side.home') }}">Home</a>
                     </li>
-                    <li class="nav-item dropdown-tgl">
-                        <a class="nav-link text-dark" href="javascript:void(0)">Auction</a>
-                        <ul class="sub-menu">
-                            <li><a href="{{ route('browse-bid') }}">browse bid</a></li>
-                            <li><a href="./bid-history.html">bid history</a></li>
-                        </ul>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="{{ route('browse-bid') }}">Browse Bid</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-dark" href="contact.html">Contact</a>

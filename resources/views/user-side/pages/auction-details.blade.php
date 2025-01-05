@@ -97,6 +97,10 @@
                         <div class="text-center">
                             <span class="badge bg-danger text-white p-3">Ended</span>
                         </div>
+                        @elseif($auction->status === 'pending')
+                        <div class="text-center">
+                            <span class="badge bg-warning text-white p-3">Coming Soon ...</span>
+                        </div>
                     @else
                         <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
                             <div class="bid-amount-wrapper d-flex align-items-center bg-light rounded">

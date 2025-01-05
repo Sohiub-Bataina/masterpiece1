@@ -209,38 +209,85 @@
 
 
 
-  <!-- Recent Auctions Section -->
+  <!-- Upcoming Auctions Section -->
   <section class="recent-auction outer-gap">
     <div class="container">
-      <h2 class="section-title">Recent Auctions</h2>
-      <div class="auction-card-small">
-        <div class="row gy-4 justify-content-center">
-          <div class="col-md-6 col-lg-4 col-xl-3">
-            <div class="auction-card">
-              <div class="card-image">
-                <img src="https://theme.bitrixinfotech.com/bidzone/assets/images/recent-auction-1.png" alt="auction-card-img" />
-                <div class="timer-wrapper">
-                  <div class="timer-inner"></div>
-                </div>
-              </div>
-              <div class="card-content">
-                <a href="https://theme.bitrixinfotech.com/bidzone/bid-detail.html" class="card-title">Mendinib top violin from best artist</a>
-                <div class="d-flex justify-content-between align-items-center">
-                  <p class="p-0">Current bid <span>589.00$</span></p>
-                  <button class="like-btn">
-                    <i class="fa fa-heart"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- More recent auction cards... -->
-        </div>
-      </div>
-    </div>
-  </section>
+        <h2 class="section-title">Upcoming Auctions</h2>
+        <div class="auction-card-small">
+            <div class="row gy-4 justify-content-center" id="pending-auctions-container">
+                @foreach($pendingAuctions as $auction)
+                    <div class="col-sm-6 col-lg-4 col-xl-3">
+                        <div class="auction-card">
+                            <div class="card-image">
+                                <img src="{{ asset($auction->main_image ?? 'user-side/assets/images/default-auction.png') }}" class="img-fluid" alt="auction-card-img">
+                                <div class="timer-wrapper">
+                                    <div class="timer-inner" id="timer-{{ $auction->id }}">
+                                        <!-- عداد المؤقت -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <a href="{{ route('auction-details', $auction->id) }}" class="card-title">{{ $auction->title }}</a>
+                                <p>Starting Price <span>${{ number_format($auction->starting_price, 2) }}</span></p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a href="{{ route('auction-details', $auction->id) }}" class="primary-btn">More Details</a>
+                                    <button class="like-btn" onclick="toggleWishlist({{ $auction->id }})">
+                                        <i class="fa-regular fa-heart" id="heart-icon-{{ $auction->id }}"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
 
+                @if($pendingAuctions->isEmpty())
+                    <div class="col-12 text-center">
+                        <p>لا توجد مزادات قادمة في الوقت الحالي.</p>
+                    </div>
+                @endif
+            </div>
+
+            @if(!$pendingAuctions->isEmpty())
+                <div class="text-center mt-4">
+                    <button id="load-more-btn" class="primary-btn">See More</button>
+                </div>
+            @endif
+        </div>
+    </div>
+</section>
 </main>
+<!-- تضمين jQuery إذا لم يكن موجودًا بالفعل -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    let currentPage = 1;
+    let hasMore = true;
+
+    $('#load-more-btn').on('click', function() {
+        if (!hasMore) return;
+
+        currentPage++;
+
+        $.ajax({
+            url: "{{ route('loadMorePendingAuctions') }}",
+            type: 'GET',
+            data: {
+                page: currentPage
+            },
+            success: function(response) {
+                if(response.html) {
+                    $('#pending-auctions-container').append(response.html);
+                }
+
+                if(!response.hasMore) {
+                    $('#load-more-btn').hide();
+                }
+            },
+            error: function(xhr) {
+                console.error(xhr);
+            }
+        });
+    });
+</script>
 <script>
     function toggleWishlist(auctionId) {
     fetch(`/wishlist/toggle/${auctionId}`, {

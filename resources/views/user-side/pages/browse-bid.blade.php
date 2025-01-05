@@ -1,6 +1,75 @@
 @extends('user-side.components.app')
 
 @section('content')
+<style>
+    /* تصميم نموذج البحث */
+.search-form {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.5rem 2.5rem 0.5rem 1rem; /* إضافة مساحة للأيقونة */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.search-button {
+    position: absolute;
+    right: 10px; /* موقع الأيقونة */
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0;
+}
+
+.search-button:hover {
+    color: var(--primary-color); /* لون عند التحويم */
+}
+
+/* تحسين الحدود */
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary-color); /* لون الحدود عند التركيز */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* تحسين الشكل */
+}
+
+    /* تأكد من أن النصوص داخل القائمة المنسدلة تظهر بالكامل */
+.dropdown-select {
+    padding-right: 3rem; /* مسافة كافية بين النص والأيقونة */
+    width: 100%; /* عرض الحقل بالكامل */
+    white-space: nowrap; /* منع النص من الانكسار */
+    overflow: hidden; /* منع التمرير الأفقي */
+    text-overflow: ellipsis; /* عرض النص المقطوع بعلامة ... إذا كان طويلاً */
+    font-size: 1rem; /* حجم خط مناسب */
+}
+
+ /* تصميم الأيقونة */
+ .dropdown-icon {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    font-size: 1rem;
+    color: var(--text-secondary);
+    pointer-events: none; /* منع التفاعل مع الأيقونة */
+    transition: transform 0.3s ease-in-out; /* حركة سلسة */
+}
+
+/* حركة الأيقونة عند الضغط فقط */
+.dropdown-select:focus + .dropdown-icon {
+    transform: translateY(-50%) rotate(180deg); /* تدوير الأيقونة عند الضغط */
+}
+
+
+</style>
 
 <main id="main-content" class="position-relative">
     <!-- Breadcrumb Section -->
@@ -30,50 +99,59 @@
                         <div class="row gy-4">
                             <div class="col-sm-6 col-xl-12">
                                 <div class="auction-wrapper p-3">
-                                    <form action="{{ route('auction.search') }}" method="GET">
-                                        <input type="search" name="query" class="form-control" placeholder="Search" value="{{ request()->query('query') }}">
-                                        <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                                    <form action="{{ route('auction.search') }}" method="GET" class="search-form" style="position: relative;">
+                                        <input type="search" name="query" class="form-control search-input" placeholder="Search" value="{{ request()->query('query') }}">
+                                        <button type="submit" class="search-button">
+                                            <i class="fa-solid fa-magnifying-glass"></i>
+                                        </button>
                                     </form>
                                 </div>
                             </div>
+
                             <div class="col-sm-6 col-xl-12">
                                 <div class="auction-wrapper p-3">
-                                    <form action="{{ route('auction.search') }}" method="GET">
-                                        <select name="vehicle_status" class="form-control bg-transparent border-0" onchange="this.form.submit()">
+                                    <form action="{{ route('auction.search') }}" method="GET" style="position: relative;">
+                                        <select name="vehicle_status" class="form-control bg-transparent border-0 dropdown-select" onchange="this.form.submit()" >
                                             <option value="">Filter by Vehicle Status</option>
                                             <option value="drivable" {{ request('vehicle_status') === 'drivable' ? 'selected' : '' }}>Drivable</option>
                                             <option value="non_drivable" {{ request('vehicle_status') === 'non_drivable' ? 'selected' : '' }}>Non Drivable</option>
                                         </select>
+                                        <i class="fa-solid fa-angle-down dropdown-icon"></i>
                                         <input type="hidden" name="query" value="{{ request('query') }}">
                                         <input type="hidden" name="storage_location" value="{{ request('storage_location') }}">
                                         <input type="hidden" name="brand_id" value="{{ request('brand_id') }}">
                                     </form>
                                 </div>
                             </div>
+
                             <div class="col-sm-6 col-xl-12">
-                                <div class="auction-wrapper p-3">
-                                    <form action="{{ route('auction.search') }}" method="GET">
-                                        <select name="storage_location" class="form-control bg-transparent border-0" onchange="this.form.submit()">
+                                <div class="auction-wrapper p-3" >
+                                    <form action="{{ route('auction.search') }}" method="GET" style="position: relative;">
+                                        <select name="storage_location" class="form-control bg-transparent border-0 dropdown-select" onchange="this.form.submit()" >
                                             <option value="">Filter by Storage Location</option>
                                             <option value="Amman Customs" {{ request('storage_location') === 'Amman Customs' ? 'selected' : '' }}>Amman Customs</option>
                                             <option value="Zarqa Free Zone" {{ request('storage_location') === 'Zarqa Free Zone' ? 'selected' : '' }}>Zarqa Free Zone</option>
                                             <option value="Aqaba" {{ request('storage_location') === 'Aqaba' ? 'selected' : '' }}>Aqaba</option>
                                         </select>
+                                        <i class="fa-solid fa-angle-down dropdown-icon"></i>
                                         <input type="hidden" name="query" value="{{ request('query') }}">
                                         <input type="hidden" name="vehicle_status" value="{{ request('vehicle_status') }}">
                                         <input type="hidden" name="brand_id" value="{{ request('brand_id') }}">
                                     </form>
                                 </div>
                             </div>
+
+
                             <div class="col-sm-6 col-xl-12">
                                 <div class="auction-wrapper p-3">
-                                    <form action="{{ route('auction.search') }}" method="GET">
-                                        <select name="brand_id" class="form-control bg-transparent border-0" onchange="this.form.submit()">
+                                    <form action="{{ route('auction.search') }}" method="GET" style="position: relative;">
+                                        <select name="brand_id" class="form-control bg-transparent border-0 dropdown-select" onchange="this.form.submit()">
                                             <option value="">Filter by Brand</option>
                                             @foreach(\App\Models\Brand::all() as $brand)
                                                 <option value="{{ $brand->id }}" {{ request('brand_id') == $brand->id ? 'selected' : '' }}>{{ $brand->brand_name }}</option>
                                             @endforeach
                                         </select>
+                                        <i class="fa-solid fa-angle-down dropdown-icon"></i>
                                         <input type="hidden" name="query" value="{{ request('query') }}">
                                         <input type="hidden" name="vehicle_status" value="{{ request('vehicle_status') }}">
                                         <input type="hidden" name="storage_location" value="{{ request('storage_location') }}">
@@ -139,14 +217,11 @@
                                     <i class="fa-regular fa-heart" id="heart-icon-{{ $auction->id }}"></i>
                                 </button>
 
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            @endforeach
-
-
-
+                    @endforeach
                         </div>
                     </div>
                 </div>

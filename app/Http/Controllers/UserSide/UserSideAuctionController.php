@@ -27,7 +27,48 @@ class UserSideAuctionController extends Controller
             ->take(5)
             ->get();
 
-        return view('user-side.pages.home', compact('auctions', 'activeAuctions'));
+        // جلب المزادات المعلقة (pending) ضمن الفترة الزمنية المحددة
+        $pendingAuctions = Auction::where('status', 'pending')
+            ->where('is_deleted', 0)
+            ->where('announcement_start_time', '<=', $currentDate)
+            ->where('start_time', '>=', $currentDate)
+            ->orderBy('announcement_start_time', 'asc')
+            ->take(5)
+            ->get();
+
+
+        return view('user-side.pages.home', compact('auctions', 'activeAuctions', 'pendingAuctions'));
+    }
+
+    // دالة لتحميل المزيد من المزادات القادمة
+    public function loadMorePendingAuctions(Request $request)
+    {
+        if ($request->ajax()) {
+            $page = $request->page ?? 1;
+            $perPage = 5;
+
+            $currentDate = now();
+
+            $pendingAuctions = Auction::where('status', 'pending')
+                ->where('is_deleted', 0)
+                ->where('announcement_start_time', '<=', $currentDate)
+                ->where('start_time', '>=', $currentDate)
+                ->orderBy('announcement_start_time', 'asc')
+                ->skip($perPage * ($page - 1))
+                ->take($perPage)
+                ->get();
+
+            if ($pendingAuctions->isEmpty()) {
+                return response()->json(['html' => '', 'hasMore' => false]);
+            }
+
+            // عرض الجزء الجزئي (Partial View) لبطاقات المزادات
+            $html = view('user-side.partials.auction_cards', compact('pendingAuctions'))->render();
+
+            return response()->json(['html' => $html, 'hasMore' => true]);
+        }
+
+        return response()->json(['html' => '', 'hasMore' => false]);
     }
 
     public function show($id)

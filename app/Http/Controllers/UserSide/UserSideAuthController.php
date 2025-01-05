@@ -80,16 +80,15 @@ class UserSideAuthController extends Controller
 
         // التحقق من تطابق كلمة المرور مع المستخدم
         if (Hash::check($request->password, $user->password)) {
+            if ($user->role !== 'customer') {
+                return back()->withErrors(['email' => 'ليس لديك صلاحية تسجيل الدخول عبر هذا النموذج.'])->withInput();
+            }
+
             // تسجيل الدخول
             Auth::login($user);
 
-            // التحقق من الدور
-            if ($user->role == 'customer') {
-                return redirect()->route('user-side.home'); // إذا كان الدور customer
-            }
-
-            // إذا كان الدور admin أو superAdmin، يتم توجيههم إلى صفحة تسجيل الدخول
-            return redirect()->route('login'); // توجيه admin و superAdmin إلى صفحة تسجيل الدخول
+            // التوجيه إلى صفحة المستخدم
+            return redirect()->route('user-side.home')->with('success', 'Welcome back!');
         } else {
             return back()->withErrors(['password' => 'كلمة المرور غير صحيحة.'])->withInput();
         }

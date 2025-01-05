@@ -69,7 +69,10 @@
                     <i class="fa-solid fa-pen-to-square"></i>
                     Edit Profile
                 </a>
-
+                <a href="{{ route('user.bids') }}" class="btn btn-info">
+                    <i class="fa-solid fa-gavel"></i>
+                    View My Bids
+                </a>
             </div>
         </div>
     </div>

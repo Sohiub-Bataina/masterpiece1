@@ -18,7 +18,6 @@
           <div class="footer-widget">
             <h5 class="widget-title">Sitemap</h5>
             <ul class="ps-3 widget-links">
-              <li><a href="{{ url('blog') }}">Blog</a></li>
               <li><a href="{{ url('faq') }}">FAQS</a></li>
               <li><a href="{{ url('about') }}">About</a></li>
               <li><a href="{{ url('contact') }}">Contact</a></li>
@@ -27,36 +26,12 @@
         </div>
         <div class="col-sm-6 col-md-3 col-lg-2">
           <div class="footer-widget">
-            <h5 class="widget-title">Categories</h5>
-            <ul class="ps-3 widget-links">
-              <li><a href="{{ url('browse-bid') }}">Music</a></li>
-              <li><a href="{{ url('browse-bid') }}">Jewellery</a></li>
-              <li><a href="{{ url('browse-bid') }}">Real Estate</a></li>
-              <li><a href="{{ url('browse-bid') }}">Vehicle</a></li>
-              <li><a href="{{ url('browse-bid') }}">Clothes</a></li>
-              <li><a href="{{ url('browse-bid') }}">Sports</a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="col-sm-6 col-md-3 col-lg-2">
-          <div class="footer-widget">
             <h5 class="widget-title">Navigation</h5>
             <ul class="ps-3 widget-links">
-              <li><a href="{{ url('my-account') }}">My Account</a></li>
-              <li><a href="{{ url('bid-history') }}">Bid History</a></li>
-              <li><a href="{{ url('checkout') }}">Checkout</a></li>
-              <li><a href="{{ url('payment') }}">Payment</a></li>
-              <li><a href="{{ url('winner') }}">Winner</a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="col-sm-6 col-md-3 col-lg-2">
-          <div class="footer-widget">
-            <h5 class="widget-title">Legal</h5>
-            <ul class="ps-3 widget-links">
-              <li><a href="{{ url('privacy') }}">Privacy Policy</a></li>
-              <li><a href="{{ url('cookies-policy') }}">Cookies Policy</a></li>
-              <li><a href="{{ url('terms-of-service') }}">Terms Of Service</a></li>
+              <li><a href="{{ url('customer-profile') }}">My Account</a></li>
+              <li><a href="{{ url('browse-bid') }}">Browse Bid</a></li>
+              <li><a href="{{ url('wishlist') }}">Wish list</a></li>
+              <li><a href="{{ url('user/bids') }}">View My Bids</a></li>
             </ul>
           </div>
         </div>
@@ -76,15 +51,6 @@
         </div>
       </div>
     </div>
-  </div>
-  <div class="footer-bottom py-2 py-md-4 bg-light">
-    <p class="text-dark text-center">
-      ©
-      <script>
-        document.write(new Date().getFullYear());
-      </script>
-      BidZone - All Rights Reserved.
-    </p>
   </div>
 </footer>
 <!-- Footer End -->
