@@ -14,6 +14,9 @@ use App\Http\Controllers\UserSide\UserSideCustomItemController;
 use App\Http\Controllers\UserSide\UserSideAuctionController;
 use App\Http\Controllers\UserSide\UserSideAuthController;
 use App\Http\Controllers\UserSide\UserSideProfileController;
+use App\Http\Controllers\UserSide\WishlistController;
+use App\Http\Controllers\UserSide\PaymentController;
+
 // user side
 
 
@@ -38,8 +41,34 @@ Route::post('/check-email', [UserSideAuthController::class, 'checkEmail'])->name
 Route::get('User-Login', [UserSideAuthController::class, 'showLoginForm'])->name('user.login');
 Route::post('/check-login', [UserSideAuthController::class, 'checkLogin'])->name('check.login');
 Route::get('/customer-profile', [UserSideProfileController::class, 'showProfile'])->name('user.profile');
+Route::post('/wishlist/toggle/{auction}', [WishlistController::class, 'toggle'])->middleware('auth');
+Route::get('/wishlist', [WishlistController::class, 'index'])->middleware('auth');
+Route::post('/logout', [UserSideAuthController::class, 'logout'])->name('user-side.auth.logout');
+Route::middleware(['auth'])->group(function () {
+    // مسار لمعالجة المزايدة
+    Route::post('/auction/{id}/placeBid', [UserSideAuctionController::class, 'placeBid'])->name('auction.placeBid');
 
 
+    // مسار لعرض صفحة الفائز
+    Route::get('/auction/bid/{bidId}/winner', [UserSideAuctionController::class, 'winnerPage'])->name('auction.winner');
+
+    // مسار لعرض صفحة الدفع عبر Stripe
+    Route::get('/stripe-payment', [UserSideAuctionController::class, 'stripePayment'])->name('auction.stripePayment');
+
+    // مسار لإنهاء المزاد (قد يتم تشغيله يدويًا أو بواسطة Scheduler)
+    Route::post('/auction/{id}/end', [UserSideAuctionController::class, 'endAuction'])->name('auction.end');
+});
+Route::middleware('auth')->group(function () {
+    // صفحة الدفع
+    Route::get('/stripe', [PaymentController::class, 'showStripeForm'])->name('stripe.show');
+    // معالجة الدفع
+    Route::post('/stripe/process', [PaymentController::class, 'processStripePayment'])->name('stripe.process');
+});
+
+// مثال لمسار نجاح
+Route::get('/stripe/success', function () {
+    return view('user-side.pages.success');  // صفحة شكر للمستخدم
+})->name('stripe.success');
 
 
 /*
@@ -67,7 +96,8 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('aut
 // **الملف الشخصي**
 Route::get('profile', [ProfileController::class, 'create'])->middleware('auth')->name('profile');
 Route::post('user-profile', [ProfileController::class, 'update'])->middleware('auth');
-
+Route::get('/user/profile/edit', [UserSideProfileController::class, 'editProfile'])->name('user.profile.edit');
+Route::post('/user/profile/update', [UserSideProfileController::class, 'updateProfile'])->name('user.profile.update');
 // **المجموعة الخاصة بمسارات الـ auth**
 Route::group(['middleware' => 'auth'], function () {
 

@@ -94,4 +94,12 @@ class UserSideAuthController extends Controller
             return back()->withErrors(['password' => 'كلمة المرور غير صحيحة.'])->withInput();
         }
     }
+    public function logout(Request $request)
+    {
+        // تسجيل الخروج
+        Auth::logout();
+
+        // توجيه المستخدم إلى صفحة المنزل بعد تسجيل الخروج
+        return redirect()->route('user-side.home');
+    }
 }

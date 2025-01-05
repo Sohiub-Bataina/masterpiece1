@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -7,10 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class UserWishlist extends Model
 {
     use HasFactory;
+    protected $table = 'user_wishlist';
 
     protected $fillable = [
         'user_id',
-        'item_id',
+        'auction_id',
         'is_deleted',
     ];
 
@@ -19,9 +21,8 @@ class UserWishlist extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function customsItem()
+    public function auction()
     {
-        return $this->belongsTo(CustomsItem::class);
+        return $this->belongsTo(Auction::class);
     }
 }
-

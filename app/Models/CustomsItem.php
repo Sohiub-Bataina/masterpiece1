@@ -30,18 +30,20 @@ class CustomsItem extends Model
 
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class, 'category_id');
     }
 
     public function brand()
     {
-        return $this->belongsTo(Brand::class);
+        return $this->belongsTo(Brand::class, 'brand_id');
     }
 
-    public function itemImages()
+    // في موديل CustomsItem
+    public function images()
     {
-        return $this->hasMany(ItemImage::class);
+        return $this->hasMany(ItemImage::class, 'item_id');  // تأكد أن الـ foreign key هو item_id
     }
+
 
     public function itemReviews()
     {

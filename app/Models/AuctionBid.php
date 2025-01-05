@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -7,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class AuctionBid extends Model
 {
     use HasFactory;
+    // Disable timestamps
+    public $timestamps = false;
 
     protected $fillable = [
         'auction_id',
@@ -26,4 +29,3 @@ class AuctionBid extends Model
         return $this->belongsTo(User::class);
     }
 }
-

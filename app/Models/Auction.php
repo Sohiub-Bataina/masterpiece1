@@ -28,7 +28,7 @@ class Auction extends Model
 
     public function customsItems()
     {
-        return $this->hasMany(CustomsItem::class, 'auction_id');
+        return $this->hasMany(CustomsItem::class);
     }
 
     public function auctionBids()

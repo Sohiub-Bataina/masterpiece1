@@ -61,7 +61,7 @@
                                         <span class="error" id="passwordError"></span>
                                     </div>
                                 </div>
-                                <div class="col-12 mb-4">
+                                <div class="col-12">
                                     <button class="primary-btn w-100" type="submit" id="submitBtn">Log In</button>
                                 </div>
                                 <div class="col-12">

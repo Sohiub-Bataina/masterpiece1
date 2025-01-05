@@ -117,7 +117,7 @@
                                             <span class="error" id="confirmPasswordError"></span>
                                         </div>
                                     </div>
-                                    <div class="col-12 mb-4">
+                                    <div class="col-12">
                                         <button class="primary-btn w-100" type="submit" id="submitBtn" disabled>Submit</button>
                                     </div>
                                     <div class="col-12">

@@ -27,7 +27,7 @@
             <img src="{{ asset('user-side/assets/images/404.svg') }}" alt="error-img">
             <h3>Page not found</h3>
             <span class="d-block mb-4">Let's redirect you to our homepage and start the bidding adventure anew.</span>
-            <a href="{{ url('/') }}" class="primary-btn light-btn d-inline-block border-dark">Back to HOME</a>
+            <a href="{{ url('home') }}" class="primary-btn light-btn d-inline-block border-dark mt-5">Back to HOME</a>
         </div>
     </div>
 

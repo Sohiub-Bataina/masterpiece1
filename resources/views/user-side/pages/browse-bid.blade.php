@@ -135,7 +135,10 @@
                             <p>Current bid <span>${{ $auction->highestBid()?->bid_amount ?? $auction->starting_price }}</span></p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <a href="{{ route('auction-details', $auction->id) }}" class="primary-btn">Bid Now</a>
-                                <button class="like-btn"><i class="fa-regular fa-heart"></i></button>
+                                <button class="like-btn" onclick="toggleWishlist({{ $auction->id }})">
+                                    <i class="fa-regular fa-heart" id="heart-icon-{{ $auction->id }}"></i>
+                                </button>
+
                             </div>
                         </div>
                     </div>
@@ -157,6 +160,31 @@
 <script>
     // تمرير البيانات من Laravel إلى JavaScript
     var auctions = @json($activeAuctions);
+  </script>
+  <script>
+    function toggleWishlist(auctionId) {
+    fetch(`/wishlist/toggle/${auctionId}`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Content-Type': 'application/json',
+        },
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'added') {
+                document.getElementById(`heart-icon-${auctionId}`).classList.replace('fa-regular', 'fa-solid');
+            } else if (data.status === 'removed') {
+                document.getElementById(`heart-icon-${auctionId}`).classList.replace('fa-solid', 'fa-regular');
+            }
+            updateWishlistCount(data.wishlistCount);
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+function updateWishlistCount(count) {
+    document.getElementById('wishlist-count').innerText = count;
+}
   </script>
   <script>
     // Get the slider element and the input field for value display

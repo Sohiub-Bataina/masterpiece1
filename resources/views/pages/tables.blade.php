@@ -16,17 +16,19 @@
                                 <i class="material-icons">add</i> Add Custom Item
                             </a>
                         </div>
-                        <div class="card-body" style="padding: 0.5rem;">
+                        <div class="card-body p-0">
                             <div class="table-responsive">
-                                <table class="table align-items-center" style="font-size: 12px;">
+                                <table class="table align-items-center mb-0" style="font-size: 14px;">
                                     <thead>
                                         <tr>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Item Name</th>
                                             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Category</th>
+                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Brand</th>
                                             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Vehicle Status</th>
                                             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Storage Location</th>
                                             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Approval Status</th>
                                             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Image</th>
+                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Description</th>
                                             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Actions</th>
                                         </tr>
                                     </thead>
@@ -35,19 +37,31 @@
                                             <tr>
                                                 <td>{{ $item->item_name }}</td>
                                                 <td class="text-center">{{ $item->category->category_name ?? 'N/A' }}</td>
+                                                <td class="text-center">{{ $item->brand->brand_name ?? 'N/A' }}</td>
                                                 <td class="text-center">{{ $item->vehicle_status }}</td>
                                                 <td class="text-center">{{ $item->storage_location }}</td>
                                                 <td class="text-center">
-                                                    <span class="badge 
-                                                        {{ $item->manager_approval == 'pending' ? 'bg-gradient-warning' : '' }} 
-                                                        {{ $item->manager_approval == 'approved' ? 'bg-gradient-success' : '' }} 
+                                                    <span class="badge
+                                                        {{ $item->manager_approval == 'pending' ? 'bg-gradient-warning' : '' }}
+                                                        {{ $item->manager_approval == 'approved' ? 'bg-gradient-success' : '' }}
                                                         {{ $item->manager_approval == 'rejected' ? 'bg-gradient-danger' : '' }}">
                                                         {{ $item->manager_approval }}
                                                     </span>
                                                 </td>
                                                 <td class="text-center">
-                                                    <img src="{{ asset('assets/item_images/' . $item->image_url) }}" alt="Item Image" class="avatar avatar-sm me-2">
+                                                    @if($item->images && $item->images->count() > 0)
+                                                        @foreach($item->images as $image)
+                                                            <img src="{{ asset($image->image_url) }}" alt="Item Image" style="max-width: 80px; max-height: 80px; object-fit: cover;">
+                                                        @endforeach
+                                                    @else
+                                                        <span>No Images</span>
+                                                    @endif
                                                 </td>
+
+
+
+
+                                                <td class="text-center">{{ \Str::limit($item->item_description, 20) }}</td>
                                                 <td class="text-center">
                                                     <!-- View Details Button -->
                                                     <button type="button" class="btn btn-info btn-link" onclick="viewDetails({{ $item->id }})">
@@ -112,6 +126,7 @@
                 <p><strong>Quantity:</strong> ${details.quantity}</p>
                 <p><strong>Vehicle Status:</strong> ${details.vehicle_status}</p>
                 <p><strong>Storage Location:</strong> ${details.storage_location}</p>
+                <p><strong>Description:</strong> ${details.item_description}</p>
             `;
 
             if (details.manager_approval === 'rejected') {

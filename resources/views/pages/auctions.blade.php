@@ -43,7 +43,7 @@
                                                 <td class="text-center">{{ $auction->end_time }}</td>
                                                 <td class="text-center">{{ $auction->item_name ?? 'N/A' }}</td>
                                                 <td class="text-center">
-                                                    <span class="badge 
+                                                    <span class="badge
                                                         @if($auction->status == 'pending') bg-warning
                                                         @elseif($auction->status == 'active') bg-success
                                                         @elseif($auction->status == 'ended') bg-secondary
