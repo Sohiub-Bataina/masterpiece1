@@ -345,27 +345,45 @@
             });
 
             bidButton.addEventListener('click', function() {
-                const currentBidValue = parseFloat(bidAmount.value);
+    const currentBidValue = parseFloat(bidAmount.value);
 
-                if (currentBidValue >= highestBid + minimumBid && isMultiple(currentBidValue, minimumBid)) {
-                    // إرسال طلب AJAX (Fetch) إلى السيرفر
-                    fetch('{{ route('auction.placeBid', $auction->id) }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({ bid: currentBidValue })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if(data.success){
-                            alert(`Your bid of $${formatNumber(currentBidValue)} has been placed.`);
-                            location.reload();
-                        } else {
-                            // إذا كانت الرسالة Insufficient insurance balance => أظهر SweetAlert
-                            if (data.message === 'Insufficient insurance balance.') {
-                                Swal.fire({
+    // عرض SweetAlert للتأكيد
+    Swal.fire({
+        title: 'Are you sure?',
+        text: `You are about to place a bid of $${formatNumber(currentBidValue)}. Do you want to continue?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, place bid!',
+        cancelButtonText: 'No, cancel',
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            if (currentBidValue >= highestBid + minimumBid && isMultiple(currentBidValue, minimumBid)) {
+                // إرسال طلب AJAX (Fetch) إلى السيرفر
+                fetch('{{ route('auction.placeBid', $auction->id) }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ bid: currentBidValue })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: `Your bid of $${formatNumber(currentBidValue)} has been placed.`,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            location.reload(); // إعادة تحميل الصفحة بعد إغلاق التنبيه
+                        });
+                    } else {
+                        // إذا كانت الرسالة Insufficient insurance balance => أظهر SweetAlert
+                        if (data.message === 'Insufficient insurance balance.') {
+                            Swal.fire({
                                 icon: 'info',                                 // يمكنك اختيار error / warning / success / info
                                 title: 'Your Next Great Deal Awaits!',
                                 html: `
@@ -388,29 +406,31 @@
                                 customClass: {
                                     popup: 'animated fadeInDown faster'          // إن كنت تستعمل Animate.css أو ما شابه
                                 }
-                                }).then((result) => {
+                            }).then((result) => {
                                 if (result.isConfirmed) {
                                     const requiredAmount = {{ $auction->insurance_fee }}; // قيمة المبلغ من السيرفر
                                     @php
                                     session(['required_amount' => $auction->insurance_fee]);
-                                @endphp
-                                    window.location.href =  `{{ route('auction.stripePayment') }}`;
+                                    @endphp
+                                    window.location.href = `{{ route('auction.stripePayment') }}`;
                                 }
-                                });
-                            } else {
-                                // أي رسالة خطأ أخرى
-                                errorMessage.textContent = data.message;
-                                errorMessage.style.display = 'block';
-                            }
+                            });
+                        } else {
+                            // أي رسالة خطأ أخرى
+                            errorMessage.textContent = data.message;
+                            errorMessage.style.display = 'block';
                         }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        errorMessage.textContent = 'An error occurred while placing your bid.';
-                        errorMessage.style.display = 'block';
-                    });
-                }
-            });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    errorMessage.textContent = 'An error occurred while placing your bid.';
+                    errorMessage.style.display = 'block';
+                });
+            }
+        }
+    });
+});
 
             updateBidDisplay(currentBid);
         @endif

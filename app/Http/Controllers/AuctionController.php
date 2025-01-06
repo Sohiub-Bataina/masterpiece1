@@ -135,6 +135,12 @@ class AuctionController extends Controller
         // تحديث حالة المزادات بناءً على الشروط
         Auction::where('is_deleted', 0)->chunk(100, function ($auctions) use ($currentDateTime) {
             foreach ($auctions as $auction) {
+                // التحقق من الحالة الحالية
+                if (in_array($auction->status, ['ended', 'cancelled'])) {
+                    // إذا كانت الحالة بالفعل ended أو cancelled، لا تقم بتغييرها
+                    continue;
+                }
+
                 if ($currentDateTime->greaterThan($auction->end_time)) {
                     // إذا كان الوقت الحالي بعد وقت النهاية، يتم تعيين الحالة إلى ended
                     $auction->status = 'ended';

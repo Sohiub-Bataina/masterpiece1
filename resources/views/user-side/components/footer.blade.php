@@ -5,13 +5,19 @@
       <div class="row gy-4 gy-lg-3">
         <div class="col-md-12 col-lg-4">
           <div class="footer-disc">
-            <a href="{{ url('/') }}" class="footer-logo">
-              <img src="{{ asset('assets/images/logo-white.svg') }}" id="footerLogo" class="fThemeLogo img-fluid" alt="logo" />
+            <a href="{{ route('user-side.home') }}" class="footer-logo">
+                <div class="d-flex align-items-center">
+                    <img src="{{ asset('assets/img/logos/Screenshot_2024-11-24_152203-removebg-preview (1).png') }}"
+                         alt="Mazadna Logo"
+                         style="height: 40px; width: auto;">
+                    <span class="ms-0.7 font-weight-bold text-white" style="font-size: 1.9rem;">azadna</span>
+                </div>
+
             </a>
             <p>
               Unlock treasures through exhilarating auctions. Your gateway to rare finds and captivating experiences awaits.
             </p>
-            <a href="mailto:info@bidzone.com" class="h4 fw-normal text-white">support@example.com</a>
+            <a href="mailto:info@bidzone.com" class="h4 fw-normal text-white">sohiubbatina@gmail.com</a>
           </div>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-2">
@@ -34,6 +40,25 @@
             </ul>
           </div>
         </div>
+        <div class="col-sm-6 col-md-3 col-lg-2">
+            <div class="footer-widget">
+              <h5 class="widget-title">Follow Us</h5>
+              <div class="social-links">
+                <a href="https://www.facebook.com" target="_blank" class="me-2">
+                  <i class="fab fa-facebook fa-lg text-white"></i>
+                </a>
+                <a href="https://www.twitter.com" target="_blank" class="me-2">
+                  <i class="fab fa-twitter fa-lg text-white"></i>
+                </a>
+                <a href="https://www.instagram.com" target="_blank">
+                  <i class="fab fa-instagram fa-lg text-white"></i>
+                </a>
+              </div>
+              <p class="mt-3 text-white" style="font-size: 0.8rem;">© 2025 Mazadna. All rights reserved.</p>
+            </div>
+          </div>
+
+
       </div>
     </div>
   </div>
