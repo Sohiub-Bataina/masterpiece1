@@ -121,9 +121,6 @@ Route::middleware(['auth', 'role:admin,superAdmin'])->group(function () {
         // **المسارات الأساسية للجدول والمزادات والإشعارات**
         Route::get('tables', [CustomItemController::class, 'index'])->name('tables');
         Route::get('auctions', [AuctionController::class, 'index'])->name('auctions.index');
-        Route::get('notifications', function () {
-            return view('pages.notifications');
-        })->name('notifications');
 
         // **إدارة المستخدمين**
         Route::get('user-management', [UserController::class, 'index'])->name('user-management');

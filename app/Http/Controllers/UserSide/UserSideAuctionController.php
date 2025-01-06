@@ -273,33 +273,16 @@ class UserSideAuctionController extends Controller
         $auction = Auction::with('bids')->findOrFail($id);
 
         if ($auction->status === 'ended') {
-            return redirect()->back()->with('error', 'This auction has already ended.');
+            return response()->json(['error' => 'This auction has already ended.'], 400);
         }
 
         DB::beginTransaction();
 
         try {
-            if ($request->status === 'cancelled') {
-                // إذا تم إلغاء المزاد
-                $auction->bids->each(function ($bid) {
-                    // إعادة نقود التأمين لكل المزايدين
-                    $user = $bid->user;
-                    if ($user && $user->insurance_fee_paid) {
-                        $user->balance += $user->insurance_fee_paid;
-                        $user->insurance_fee_paid = 0; // تعيين رسوم التأمين المدفوعة إلى صفر
-                        $user->save();
-                    }
-                });
-
-                $auction->status = 'cancelled';
-                $auction->save();
-
-                DB::commit();
-
-                return redirect()->route('auctions.index')->with('success', 'The auction has been cancelled, and insurance fees have been refunded to all bidders.');
-            }
-
-            $highestBid = $auction->bids()->orderBy('bid_amount', 'desc')->first();
+            $highestBid = $auction->bids()
+                ->where('auction_id', $auction->id)
+                ->orderBy('bid_amount', 'desc')
+                ->first();
 
             if ($highestBid) {
                 // تعيين الفائز
@@ -316,7 +299,7 @@ class UserSideAuctionController extends Controller
 
                 DB::commit();
 
-                return redirect()->route('auction.winner', $highestBid->id);
+                return response()->json(['message' => 'Auction ended successfully. Winner determined.', 'winner_id' => $highestBid->id], 200);
             } else {
                 // إذا لم يكن هناك مزايدات، إنهاء المزاد بدون فائز
                 $auction->status = 'ended';
@@ -324,11 +307,11 @@ class UserSideAuctionController extends Controller
 
                 DB::commit();
 
-                return redirect()->back()->with('info', 'The auction has ended with no bids.');
+                return response()->json(['message' => 'The auction has ended with no bids.'], 200);
             }
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'An error occurred while processing the auction.');
+            return response()->json(['error' => 'An error occurred while processing the auction.', 'exception' => $e->getMessage()], 500);
         }
     }
 }

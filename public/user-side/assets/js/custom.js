@@ -150,10 +150,28 @@ $(document).ready(function () {
                 if (timerElement) {
                     timerElement.innerHTML = "EXPIRED";
                 }
+
+                // استدعاء AJAX لإنهاء المزاد
+                $.ajax({
+                    url: `/auction/${auction.id}/end`,
+                    method: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        status: 'ended'
+                    },
+                    success: function (response) {
+                        console.log(response.message); // تأكيد النجاح
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error ending auction:', error);
+                    }
+                });
             }
         }, 1000);
     });
 });
+
+
 
 
 // Auction Timer End

@@ -35,20 +35,6 @@
           </div>
         </div>
       </div>
-      <hr class="my-4 my-lg-5 border-white" />
-      <div class="d-flex flex-wrap gap-4 justify-content-center justify-content-xl-between align-items-center">
-        <ul class="footer-social-links">
-          <li><a href="javascript:void(0)"><i class="fa fa-facebook-f"></i></a></li>
-          <li><a href="javascript:void(0)"><i class="fa fa-twitter"></i></a></li>
-          <li><a href="javascript:void(0)"><i class="fa fa-pinterest-p"></i></a></li>
-          <li><a href="javascript:void(0)"><i class="fa fa-instagram"></i></a></li>
-        </ul>
-        <div class="bid-number">
-          <h2><span>1,50,000</span> Bids</h2>
-          <h2><span>10,376</span> Members</h2>
-          <h2><span>8942</span> Feedbacks</h2>
-        </div>
-      </div>
     </div>
   </div>
 </footer>
