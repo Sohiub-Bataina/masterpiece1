@@ -16,6 +16,7 @@ use App\Http\Controllers\UserSide\UserSideProfileController;
 use App\Http\Controllers\UserSide\WishlistController;
 use App\Http\Controllers\UserSide\PaymentController;
 use App\Http\Controllers\UserSide\UserSideBidController;
+use App\Http\Controllers\UserSide\ContactController;
 
 // user side
 
@@ -29,6 +30,14 @@ Route::get('/browse-bid', function () {
 Route::get('/signup', function () {
     return view('user-side.auth.signup');
 })->name('register');
+Route::get('/contact', function () {
+    return view('user-side.pages.contact');
+})->name('contact');
+Route::get('/about', function () {
+    return view('user-side.pages.about'); // المسار إلى ملف الصفحة
+})->name('about');
+
+Route::post('/send-mail', [ContactController::class, 'sendMail'])->name('send.mail');
 
 Route::get('/signup', [UserSideAuthController::class, 'showSignUpForm'])->name('signup');
 Route::post('/register', [UserSideAuthController::class, 'register'])->name('register');

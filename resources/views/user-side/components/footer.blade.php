@@ -18,7 +18,6 @@
           <div class="footer-widget">
             <h5 class="widget-title">Sitemap</h5>
             <ul class="ps-3 widget-links">
-              <li><a href="{{ url('faq') }}">FAQS</a></li>
               <li><a href="{{ url('about') }}">About</a></li>
               <li><a href="{{ url('contact') }}">Contact</a></li>
             </ul>

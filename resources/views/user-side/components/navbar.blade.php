@@ -59,7 +59,10 @@
                         <a class="nav-link text-dark" href="{{ route('browse-bid') }}">Browse Bid</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark" href="contact.html">Contact</a>
+                        <a class="nav-link text-dark" href="{{ route('contact') }}">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="{{ route('about') }}">About</a>
                     </li>
                 </ul>
             </div>
