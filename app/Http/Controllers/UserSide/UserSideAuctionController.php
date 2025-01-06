@@ -268,7 +268,7 @@ class UserSideAuctionController extends Controller
     }
 
 
-    public function endAuction($id)
+    public function endAuction($id, Request $request)
     {
         $auction = Auction::with('bids')->findOrFail($id);
 
@@ -276,11 +276,31 @@ class UserSideAuctionController extends Controller
             return redirect()->back()->with('error', 'This auction has already ended.');
         }
 
-        $highestBid = $auction->bids()->orderBy('bid_amount', 'desc')->first();
-
         DB::beginTransaction();
 
         try {
+            if ($request->status === 'cancelled') {
+                // إذا تم إلغاء المزاد
+                $auction->bids->each(function ($bid) {
+                    // إعادة نقود التأمين لكل المزايدين
+                    $user = $bid->user;
+                    if ($user && $user->insurance_fee_paid) {
+                        $user->balance += $user->insurance_fee_paid;
+                        $user->insurance_fee_paid = 0; // تعيين رسوم التأمين المدفوعة إلى صفر
+                        $user->save();
+                    }
+                });
+
+                $auction->status = 'cancelled';
+                $auction->save();
+
+                DB::commit();
+
+                return redirect()->route('auctions.index')->with('success', 'The auction has been cancelled, and insurance fees have been refunded to all bidders.');
+            }
+
+            $highestBid = $auction->bids()->orderBy('bid_amount', 'desc')->first();
+
             if ($highestBid) {
                 // تعيين الفائز
                 $highestBid->is_winner = 1;
@@ -291,9 +311,10 @@ class UserSideAuctionController extends Controller
                     ->where('id', '!=', $highestBid->id)
                     ->update(['is_winner' => 0]);
 
-                // تحديث حالة المزاد
                 $auction->status = 'ended';
                 $auction->save();
+
+                DB::commit();
 
                 return redirect()->route('auction.winner', $highestBid->id);
             } else {
@@ -301,11 +322,13 @@ class UserSideAuctionController extends Controller
                 $auction->status = 'ended';
                 $auction->save();
 
+                DB::commit();
+
                 return redirect()->back()->with('info', 'The auction has ended with no bids.');
             }
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'An error occurred while ending the auction.');
+            return redirect()->back()->with('error', 'An error occurred while processing the auction.');
         }
     }
 }

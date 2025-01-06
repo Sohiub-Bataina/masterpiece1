@@ -82,20 +82,49 @@ class AuctionController extends Controller
     public function edit($id)
     {
         $auction = Auction::findOrFail($id);
-        return view('pages.edit_auction', compact('auction'));
+        $customItems = CustomsItem::whereNull('auction_id')->orWhere('auction_id', $auction->id)->get(); // عرض العناصر غير المرتبطة أو المرتبطة بهذا المزاد
+        return view('pages.edit_auction', compact('auction', 'customItems'));
     }
+
 
     public function update(Request $request, $id)
     {
-        $auction = Auction::findOrFail($id);
-        $auction->auction_name = $request->auction_name;
-        $auction->start_time = $request->start_time;
-        $auction->end_time = $request->end_time;
-        $auction->status = $request->auction_status ?: $auction->status;
+        $validatedData = $request->validate([
+            'auction_name' => 'required|string|max:255',
+            'start_time' => 'required|date',
+            'end_time' => 'required|date|after:start_time',
+            'announcement_start_time' => 'required|date',
+            'announcement_end_time' => 'required|date|after:announcement_start_time',
+            'inspection_start_time' => 'required|date',
+            'inspection_end_time' => 'required|date|after:inspection_start_time',
+            'minimum_price' => 'required|numeric|min:0',
+            'starting_price' => 'required|numeric|min:0',
+            'minimum_bid' => 'required|numeric|min:0',
+            'insurance_fee' => 'required|numeric|min:0',
+            'item_id' => 'required|exists:customs_items,id',
+            'main_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
 
-        $auction->save();
+        $auction = Auction::findOrFail($id);
+
+        // إذا تم رفع صورة جديدة
+        if ($request->hasFile('main_image')) {
+            // حذف الصورة القديمة إذا كانت موجودة
+            if ($auction->main_image && file_exists(public_path($auction->main_image))) {
+                unlink(public_path($auction->main_image));
+            }
+
+            // تخزين الصورة الجديدة
+            $imageName = time() . '_' . $request->file('main_image')->getClientOriginalName();
+            $request->file('main_image')->move(public_path('assets/img'), $imageName);
+            $validatedData['main_image'] = 'assets/img/' . $imageName;
+        }
+
+        $auction->update($validatedData);
+
         return redirect()->route('auctions.index')->with('success', 'Auction updated successfully!');
     }
+
 
 
     public function updateAuctionStatuses()

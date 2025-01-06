@@ -11,8 +11,8 @@ class CategoryController extends Controller
     // عرض جميع الفئات
     public function index()
     {
-       $categories = Category::paginate(10);  // 10 هي عدد العناصر لكل صفحة
-       return view('pages.category', compact('categories'));
+        $categories = Category::paginate(10);  // 10 هي عدد العناصر لكل صفحة
+        return view('pages.category', compact('categories'));
     }
 
     // عرض نموذج إضافة فئة جديدة
@@ -90,12 +90,18 @@ class CategoryController extends Controller
     {
         $category = Category::findOrFail($id);
 
+        // التحقق من وجود عناصر مرتبطة بهذه الفئة
+        if ($category->customsItems()->exists()) {
+            return redirect()->route('category.index')->with('error', 'Cannot delete this category because it is associated with other items.');
+        }
+
         // حذف الصورة إذا كانت موجودة
         if ($category->category_image && file_exists(public_path($category->category_image))) {
             unlink(public_path($category->category_image));
         }
 
         $category->delete();
-        return redirect()->route('category.index')->with('success', 'Category deleted successfully');
+
+        return redirect()->route('category.index')->with('success', 'Category deleted successfully!');
     }
 }

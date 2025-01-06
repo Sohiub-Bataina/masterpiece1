@@ -162,27 +162,38 @@
                             <div class="col-sm-6 col-xl-12">
                                 <div class="auction-wrapper p-3">
                                     <h4 class="mb-3">Filter by Price</h4>
-                                    <div class="filter-price">
-                                        <!-- Slider to select price range -->
-                                        <div class="price-slider">
-                                            <label for="priceRange">Price Range:</label>
-                                            <div class="d-flex justify-content-between">
-                                                <span id="minPriceLabel">${{ $minPrice }}</span>
-                                                <span id="maxPriceLabel">${{ $maxPrice }}</span>
-                                            </div>
-                                            <input type="range" min="{{ $minPrice }}" max="{{ $maxPrice }}" value="{{ $minPrice }}" id="priceRange" name="price" class="slider">
-                                        </div>
-                                        <div class="price-value mt-3">
-                                            <!-- Display value below the slider -->
-                                            <div class="d-flex justify-content-between">
-                                                <input id="priceValue" value="{{ $minPrice }}" class="price-input" type="number" min="{{ $minPrice }}" max="{{ $maxPrice }}">
-                                                <label for="priceValue">$</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Submit the filter form -->
                                     <form action="{{ route('auction.search') }}" method="GET" id="filterForm">
-                                        <input type="hidden" name="price" id="hiddenPrice" value="{{ $minPrice }}">
+                                        <!-- Input for Minimum Price -->
+                                        <div class="form-group mb-3">
+                                            <label for="minPriceInput" class="form-label">Minimum Price ($)</label>
+                                            <input
+                                                type="number"
+                                                id="minPriceInput"
+                                                name="min_price"
+                                                class="form-control"
+                                                value="{{ $minPrice }}"
+                                                min="{{ $minPrice }}"
+                                                max="{{ $maxPrice }}"
+                                                oninput="validatePriceInputs()"
+                                                required>
+                                        </div>
+
+                                        <!-- Input for Maximum Price -->
+                                        <div class="form-group mb-3">
+                                            <label for="maxPriceInput" class="form-label">Maximum Price ($)</label>
+                                            <input
+                                                type="number"
+                                                id="maxPriceInput"
+                                                name="max_price"
+                                                class="form-control"
+                                                value="{{ $maxPrice }}"
+                                                min="{{ $minPrice }}"
+                                                max="{{ $maxPrice }}"
+                                                oninput="validatePriceInputs()"
+                                                required>
+                                        </div>
+
+                                        <!-- Filter Button -->
                                         <button type="submit" class="primary-btn small-btn mt-3">Filter</button>
                                     </form>
                                 </div>
@@ -261,32 +272,18 @@ function updateWishlistCount(count) {
     document.getElementById('wishlist-count').innerText = count;
 }
   </script>
-  <script>
-    // Get the slider element and the input field for value display
-    const priceRange = document.getElementById('priceRange');
-    const priceValue = document.getElementById('priceValue');
-    const hiddenPrice = document.getElementById('hiddenPrice');
-    const minPriceLabel = document.getElementById('minPriceLabel');
-    const maxPriceLabel = document.getElementById('maxPriceLabel');
+ <script>
+    function validatePriceInputs() {
+        const minPriceInput = document.getElementById('minPriceInput');
+        const maxPriceInput = document.getElementById('maxPriceInput');
 
-    // Set initial value of the priceValue input to the initial slider value
-    priceValue.value = priceRange.value;
-    hiddenPrice.value = priceRange.value;
-
-    // Event listener to update value in the input and hidden field when slider is moved
-    priceRange.addEventListener('input', function() {
-        // Update displayed value and hidden field for form submission
-        priceValue.value = priceRange.value;
-        hiddenPrice.value = priceRange.value;
-    });
-
-    // Handle input field change
-    priceValue.addEventListener('input', function() {
-        // Ensure the value is within the allowed range
-        if (priceValue.value < {{ $minPrice }}) priceValue.value = {{ $minPrice }};
-        if (priceValue.value > {{ $maxPrice }}) priceValue.value = {{ $maxPrice }};
-
-        priceRange.value = priceValue.value;  // Sync slider with input field
-        hiddenPrice.value = priceValue.value; // Update hidden field for form submission
-    });
+        // Ensure min price doesn't exceed max price
+        if (parseInt(minPriceInput.value) > parseInt(maxPriceInput.value)) {
+            minPriceInput.setCustomValidity("Minimum price cannot exceed maximum price.");
+            maxPriceInput.setCustomValidity("Maximum price cannot be less than minimum price.");
+        } else {
+            minPriceInput.setCustomValidity("");
+            maxPriceInput.setCustomValidity("");
+        }
+    }
 </script>

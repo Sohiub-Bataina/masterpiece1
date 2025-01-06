@@ -36,7 +36,7 @@
                                                 <td class="text-center">{{ $brand->brand_name }}</td>
                                                 <td class="text-center">
                                                     @if($brand->brand_image)
-                                                        <img src="{{ asset('storage/' . $brand->brand_image) }}" alt="Brand Image" width="50">
+                                                    <img src="{{ asset($brand->brand_image) }}" alt="Brand Image" style="width: 50px; height: auto;">
                                                     @else
                                                         N/A
                                                     @endif

@@ -30,8 +30,10 @@ class BrandController extends Controller
         ]);
 
         $brand_image = null;
+
         if ($request->hasFile('brand_image')) {
-            $brand_image = $request->file('brand_image')->store('public/brands');
+            $imagePath = $request->file('brand_image')->move(public_path('assets/img'), $request->file('brand_image')->getClientOriginalName());
+            $brand_image = 'assets/img/' . $request->file('brand_image')->getClientOriginalName();
         }
 
         Brand::create([
@@ -42,6 +44,7 @@ class BrandController extends Controller
 
         return redirect()->route('brand.index')->with('success', 'Brand created successfully!');
     }
+
 
     public function edit($id)
     {
@@ -61,11 +64,14 @@ class BrandController extends Controller
         $brand = Brand::findOrFail($id);
 
         if ($request->hasFile('brand_image')) {
-            if ($brand->brand_image) {
-                Storage::delete($brand->brand_image);
+            // حذف الصورة القديمة إذا كانت موجودة
+            if ($brand->brand_image && file_exists(public_path($brand->brand_image))) {
+                unlink(public_path($brand->brand_image));
             }
-            $brand_image = $request->file('brand_image')->store('public/brands');
-            $brand->brand_image = $brand_image;
+
+            // تخزين الصورة الجديدة
+            $imagePath = $request->file('brand_image')->move(public_path('assets/img'), $request->file('brand_image')->getClientOriginalName());
+            $brand->brand_image = 'assets/img/' . $request->file('brand_image')->getClientOriginalName();
         }
 
         $brand->update([
@@ -76,12 +82,19 @@ class BrandController extends Controller
         return redirect()->route('brand.index')->with('success', 'Brand updated successfully!');
     }
 
+
     public function destroy($id)
     {
         $brand = Brand::findOrFail($id);
 
-        if ($brand->brand_image) {
-            Storage::delete($brand->brand_image);
+        // التحقق من وجود عناصر مرتبطة بهذه العلامة التجارية
+        if ($brand->customsItems()->exists()) { // إذا كانت هناك علاقة مخصصة
+            return redirect()->route('brand.index')->with('error', 'Cannot delete this brand because it is associated with other items.');
+        }
+
+        // حذف الصورة إذا كانت موجودة
+        if ($brand->brand_image && file_exists(public_path($brand->brand_image))) {
+            unlink(public_path($brand->brand_image));
         }
 
         $brand->delete();

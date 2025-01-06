@@ -14,14 +14,13 @@
                                 <i class="material-icons opacity-10">weekend</i>
                             </div>
                             <div class="text-end pt-1">
-                                <p class="text-sm mb-0 text-capitalize">Today's Money</p>
-                                <h4 class="mb-0">$53k</h4>
+                                <p class="text-sm mb-0 text-capitalize">Customers</p>
+                                <h4 class="mb-0">{{ $UsersCount }}</h4>
                             </div>
                         </div>
                         <hr class="dark horizontal my-0">
                         <div class="card-footer p-3">
-                            <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+55% </span>than
-                                lask week</p>
+                            <p class="mb-0"><span class="text-success text-sm font-weight-bolder"></span></p>
                         </div>
                     </div>
                 </div>
@@ -33,14 +32,13 @@
                                 <i class="material-icons opacity-10">person</i>
                             </div>
                             <div class="text-end pt-1">
-                                <p class="text-sm mb-0 text-capitalize">Today's Users</p>
-                                <h4 class="mb-0">2</h4>
+                                <p class="text-sm mb-0 text-capitalize">Active Auction</p>
+                                <h4 class="mb-0">{{ $auctionActiveCount }}</h4>
                             </div>
                         </div>
                         <hr class="dark horizontal my-0">
                         <div class="card-footer p-3">
-                            <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+3% </span>than
-                                lask month</p>
+                            <p class="mb-0"><span class="text-success text-sm font-weight-bolder"></span></p>
                         </div>
                     </div>
                 </div>
@@ -52,14 +50,13 @@
                                 <i class="material-icons opacity-10">person</i>
                             </div>
                             <div class="text-end pt-1">
-                                <p class="text-sm mb-0 text-capitalize">New Clients</p>
-                                <h4 class="mb-0">1</h4>
+                                <p class="text-sm mb-0 text-capitalize">Pending Auction</p>
+                                <h4 class="mb-0">{{ $auctionPendingCount }}</h4>
                             </div>
                         </div>
                         <hr class="dark horizontal my-0">
                         <div class="card-footer p-3">
-                            <p class="mb-0"><span class="text-danger text-sm font-weight-bolder">-2%</span> than
-                                yesterday</p>
+                            <p class="mb-0"><span class="text-danger text-sm font-weight-bolder"></span></p>
                         </div>
                     </div>
                 </div>
@@ -71,70 +68,49 @@
                                 <i class="material-icons opacity-10">weekend</i>
                             </div>
                             <div class="text-end pt-1">
-                                <p class="text-sm mb-0 text-capitalize">Sales</p>
-                                <h4 class="mb-0">$100</h4>
+                                <p class="text-sm mb-0 text-capitalize">Items</p>
+                                <h4 class="mb-0">{{ $itemCount }}</h4>
                             </div>
                         </div>
                         <hr class="dark horizontal my-0">
                         <div class="card-footer p-3">
-                            <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+5% </span>than
-                                yesterday</p>
+                            <p class="mb-0"><span class="text-success text-sm font-weight-bolder"></span></p>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="row mb-4 mt-4">
-                <div class="col-lg-4 col-md-6 mb-md-0 mb-4">
+                <div class="col-lg-4 col-md-12 mb-md-0 mb-4">
                     <div class="card">
                         <div class="card-header pb-0">
                             <div class="row">
                                 <div class="col-lg-6 col-7">
-                                    <h6>Projects</h6>
-                                    <p class="text-sm mb-0">
-                                        <i class="fa fa-check text-info" aria-hidden="true"></i>
-                                        <span class="font-weight-bold ms-1">30 done</span> this month
-                                    </p>
-                                </div>
-                                <div class="col-lg-6 col-5 my-auto text-end">
-                                    <div class="dropdown float-lg-end pe-4">
-                                        <a class="cursor-pointer" id="dropdownTable" data-bs-toggle="dropdown"
-                                            aria-expanded="false">
-                                            <i class="fa fa-ellipsis-v text-secondary"></i>
-                                        </a>
-                                        <ul class="dropdown-menu px-2 py-3 ms-sm-n4 ms-n5"
-                                            aria-labelledby="dropdownTable">
-                                            <li><a class="dropdown-item border-radius-md" href="javascript:;">Action</a>
-                                            </li>
-                                            <li><a class="dropdown-item border-radius-md" href="javascript:;">Another
-                                                    action</a></li>
-                                            <li><a class="dropdown-item border-radius-md" href="javascript:;">Something
-                                                    else here</a></li>
-                                        </ul>
-                                    </div>
+                                    <h6>Storage Locations</h6>
                                 </div>
                             </div>
                         </div>
                         <div class="card-body px-0 pb-2">
                             <div class="table-responsive">
-                            <canvas id="myDonutChart" ></canvas>
+                                <canvas id="doughnutChart"></canvas>
                             </div>
                         </div>
                     </div>
                 </div>
+
                 <div class="col-lg-8 col-md-6">
                     <div class="card h-100">
                         <div class="card-header pb-0">
-                            <h6>Orders overview</h6>
+                            <h6>Auctions Per Month</h6>
                             <p class="text-sm">
                                 <i class="fa fa-arrow-up text-success" aria-hidden="true"></i>
-                                <span class="font-weight-bold">24%</span> this month
-                            </p>
+                                <span class="font-weight-bold"></span></p>
                         </div>
                         <div class="card-body p-3">
-                        <canvas id="myBarChart"></canvas>
+                            <canvas id="myBarChart"></canvas>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </main>
@@ -143,60 +119,61 @@
     @push('js')
     <script src="{{ asset('assets') }}/js/plugins/chartjs.min.js"></script>
     <script>
- var ctx = document.getElementById('myDonutChart').getContext('2d');
-    var myDonutChart = new Chart(ctx, {
-        type: 'doughnut', // This creates a donut chart
-        data: {
-            labels: ['Red', 'Blue', 'Yellow', 'Green'],
-            datasets: [{
-                label: 'My Donut Chart',
-                data: [300, 50, 100, 75], // Data values for each slice
-                backgroundColor: ['#FF5733', '#33AFFF', '#FFEB3B', '#4CAF50'],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top', // You can change the position to 'top', 'left', 'bottom', or 'right'
-                },
-                tooltip: {
-                    enabled: true, // Tooltip is enabled by default
-                }
+       // Doughnut Chart for Storage Locations
+var ctxDoughnut = document.getElementById('doughnutChart').getContext('2d');
+var doughnutChart = new Chart(ctxDoughnut, {
+    type: 'doughnut',
+    data: {
+        labels: @json($locationLabels), // أسماء المواقع
+        datasets: [{
+            label: 'Items by Storage Location',
+            data: @json($locationCounts), // أعداد العناصر لكل موقع
+            backgroundColor: [
+                'rgb(255, 99, 132)',
+                'rgb(54, 162, 235)',
+                'rgb(255, 205, 86)',
+                'rgb(75, 192, 192)',
+                'rgb(153, 102, 255)',
+                'rgb(255, 159, 64)'
+            ],
+            hoverOffset: 4
+        }]
+    },
+    options: {
+        responsive: true
+    }
+});
+var ctx = document.getElementById('myBarChart').getContext('2d');
+var myBarChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+        datasets: [{
+            label: 'Monthly Auctions',
+            data: @json($auctionCountsByMonth), // القيم الديناميكية للمزادات
+            backgroundColor: '#4CAF50',
+            borderColor: '#388E3C',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
             }
-        }
-    });
-    var ctx = document.getElementById('myBarChart').getContext('2d');
-    var myBarChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-            datasets: [{
-                label: 'Monthly Sales',
-                data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0],
-                backgroundColor: '#4CAF50',
-                borderColor: '#388E3C',
-                borderWidth: 1
-            }]
         },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
+        plugins: {
+            legend: {
+                position: 'top'
             },
-            plugins: {
-                legend: {
-                    position: 'top'
-                },
-                tooltip: {
-                    enabled: true
-                }
+            tooltip: {
+                enabled: true
             }
         }
-    });
+    }
+});
+
     </script>
     @endpush
 </x-layout>

@@ -146,10 +146,18 @@ class CustomItemController extends Controller
     public function destroy($id)
     {
         try {
-            $user = CustomsItem::findOrFail($id);
-            $user->is_deleted = 1;
-            $user->save();
-            return redirect()->route('items.index')->with('success', 'item marked as deleted successfully.');
+            $item = CustomsItem::findOrFail($id);
+
+            // التحقق من ارتباط العنصر بمزاد
+            if ($item->auction()->exists()) { // تحقق من وجود العلاقة
+                return redirect()->route('items.index')->with('error', 'Cannot delete this item because it is associated with an auction.');
+            }
+
+            // وضع علامة محذوف
+            $item->is_deleted = 1;
+            $item->save();
+
+            return redirect()->route('items.index')->with('success', 'Item marked as deleted successfully.');
         } catch (\Exception $e) {
             return redirect()->route('items.index')->with('error', 'An error occurred while deleting the item.');
         }
