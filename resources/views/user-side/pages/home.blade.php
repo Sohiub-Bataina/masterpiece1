@@ -220,11 +220,6 @@
                         <div class="auction-card">
                             <div class="card-image">
                                 <img src="{{ asset($auction->main_image ?? 'user-side/assets/images/default-auction.png') }}" class="img-fluid" alt="auction-card-img">
-                                <div class="timer-wrapper">
-                                    <div class="timer-inner" id="timer-{{ $auction->id }}">
-                                        <!-- عداد المؤقت -->
-                                    </div>
-                                </div>
                             </div>
                             <div class="card-content">
                                 <a href="{{ route('auction-details', $auction->id) }}" class="card-title">{{ $auction->title }}</a>
